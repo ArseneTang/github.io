@@ -141,7 +141,7 @@
 <p>测试代码如下：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="variable">$a</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line">exec(<span class="string">&quot;<span class="subst">$a</span>&quot;</span>);</span><br><span class="line"><span class="comment">//$b=exec(&quot;$a&quot;);</span></span><br><span class="line"><span class="comment">//echo $b;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>命令执行函数我用的是<code>exec</code>,因为这个函数本身是没有回显的，拿来做测试简直不能再合适，想了解这个函数可以看这里：[<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.exec.php]">https://www.php.net/manual/zh/function.exec.php]</a> 这里我们直接输入命令是没有回显的：</p>
+<p>命令执行函数我用的是<code>exec</code>,因为这个函数本身是没有回显的，拿来做测试简直不能再合适，想了解这个函数可以看这里：<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.exec.php">https://www.php.net/manual/zh/function.exec.php</a> 这里我们直接输入命令是没有回显的：</p>
 <p><img src="https://i.loli.net/2021/07/21/oRcbdHLilutmUq6.png" alt="image.png"></p>
 <p>我们首先用sleep命令看看命令是否被成功执行了，看下图它转了五秒之后才恢复说明命令是执行了的：</p>
 <p><img src="https://i.loli.net/2021/07/21/1E8dgHADGU67kRZ.png" alt="image.png"></p>
@@ -155,7 +155,7 @@
 <p>域名解析是把域名指向网站空间IP，让人们通过注册的域名可以方便地访问到网站的一种服务。IP地址是网络上标识站点的数字地址，为了方便记忆，采用域名来代替IP地址标识站点地址。域名解析就是域名到IP地址的转换过程。域名的解析工作由DNS服务器完成。</p>
 <p>域名解析也叫域名指向、服务器设置、域名配置以及反向IP登记等等。说得简单点就是将好记的域名解析成IP，服务由DNS服务器完成，是把域名解析到一个IP地址，然后在此IP地址的主机上将一个子目录与域名绑定。</p>
 <p>而如果我们发起请求的目标不是IP地址而是域名的话，就一定会发生一次域名解析，那么假如我们有一个可控的二级域名，那么当它向下一层域名发起解析的时候，我们就能拿到它的域名解析请求。这就相当于配合dns请求完成对命令执行的判断，这就称之为dnslog。当然，发起一个dns请求需要通过linux中的<code>ping</code>命令或者<code>curl</code>命令哈</p>
-<p>然后这里推荐一个dnslog的利用平台：ceye [<a target="_blank" rel="noopener" href="http://ceye.io/]%EF%BC%8C%E6%88%91%E4%B8%AA%E4%BA%BA%E8%A7%89%E5%BE%97%E6%8C%BA%E5%A5%BD%E7%94%A8%E7%9A%84%EF%BC%8C%E5%BD%93%E7%84%B6%E5%A4%A7%E4%BD%AC%E4%BB%AC%E4%B9%9F%E5%8F%AF%E4%BB%A5%E9%80%89%E6%8B%A9%E8%87%AA%E5%B7%B1%E6%90%AD%EF%BC%8C%E6%B3%A8%E5%86%8C%E8%B4%A6%E5%8F%B7%E4%B9%8B%E5%90%8E%EF%BC%8C%E4%BC%9A%E7%BB%99%E4%B8%80%E4%B8%AA%E5%9F%9F%E5%90%8D%EF%BC%8C%E5%BD%93%E5%8F%91%E8%B5%B7%E7%9A%84%E8%AF%B7%E6%B1%82%E4%B8%AD%E5%90%AB%E6%9C%89%E8%BF%99%E4%B8%AA%E5%9F%9F%E5%90%8D%E6%97%B6%EF%BC%8C%E5%B9%B3%E5%8F%B0%E5%B0%B1%E4%BC%9A%E6%9C%89%E8%AE%B0%E5%BD%95%E3%80%82%E5%A5%BD%E4%BA%86%EF%BC%8C%E9%93%BA%E5%9E%AB%E7%BB%93%E6%9D%9F%EF%BC%8C%E4%B8%8B%E9%9D%A2%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%A7%8B%E6%B5%8B%E8%AF%95%EF%BC%9A">http://ceye.io/]，我个人觉得挺好用的，当然大佬们也可以选择自己搭，注册账号之后，会给一个域名，当发起的请求中含有这个域名时，平台就会有记录。好了，铺垫结束，下面正式开始测试：</a></p>
+<p>然后这里推荐一个dnslog的利用平台：ceye <a target="_blank" rel="noopener" href="http://ceye.io/">http://ceye.io/</a>，我个人觉得挺好用的，当然大佬们也可以选择自己搭，注册账号之后，会给一个域名，当发起的请求中含有这个域名时，平台就会有记录。好了，铺垫结束，下面正式开始测试：</p>
 <p><img src="https://i.loli.net/2021/07/23/cZLKtFx7ONgzRE3.png" alt="image.png"></p>
 <p>还是这一段代码，我们用分号<code>;</code>作为命令的分隔符，然后发起<code>curl</code>请求，然后最后用反引号执行命令，具体如下：</p>
 <p><img src="https://i.loli.net/2021/07/23/wtxKpbeEDFrlA8i.png" alt="image.png"></p>
@@ -186,8 +186,8 @@
 <p><img src="https://i.loli.net/2021/07/23/7VhzlXgKQsyeaOm.png" alt="image.png"></p>
 <p><img src="https://i.loli.net/2021/07/23/fewhUp82PEVvgFS.png" alt="image.png"></p>
 <p>出来了出来了，加上<code>&#123;&#125;</code>就是最终的flag，不过我看wp的时候方法都是用反弹shell做的，不知道我这种算不算非预期解，想了解那种方法的可以自行百度，这里也推荐两篇文章：</p>
-<p>[<a target="_blank" rel="noopener" href="https://www.extrader.top/posts/c714e372/]">https://www.extrader.top/posts/c714e372/]</a></p>
-<p>[<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45521281/article/details/105351352]">https://blog.csdn.net/qq_45521281/article/details/105351352]</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.extrader.top/posts/c714e372/">https://www.extrader.top/posts/c714e372/</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45521281/article/details/105351352">https://blog.csdn.net/qq_45521281/article/details/105351352</a></p>
 
         
             <div id="toc-article">
