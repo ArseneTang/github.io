@@ -166,7 +166,7 @@
 <h2 id="五-get-和-set"><a href="#五-get-和-set" class="headerlink" title="五.__get()和__set()"></a>五.<code>__get()</code>和<code>__set()</code></h2><p><code>__get()</code>：从<strong>不可访问的属性中</strong>读取数据，或者说是调用一个类及其父类方法中未定义属性时</p>
 <p><code>__set()</code>：当给一个未定义的属性赋值时，或者修改一个不能被修改的属性时(<code>private protected</code>)(用的不多)</p>
 <p><img src="https://i.loli.net/2021/08/15/iOyhwTMNasckGeI.png" alt="image.png"></p>
-<p>比如说看上面这个例子，<code>echo</code>语句调用了<code>__toString()</code>，然后它返回的是当前对象的<code>a</code>属性，但我们是没有定义<code>a</code>这个属性的，所以说会调用<code>__get()</code>，然后将返回值输出出来</p>
+<p>比如说看上面这个例子，<code>echo</code>语句调用了<code>__toString()</code>，然后它返回的是当前对象的<code>a</code>属性，但我们是没有定义<code>a</code>这个属性的，所以说会调用<code>__get()</code>，然后将返回值通过<code>echo</code>打印了出来</p>
 <h2 id="六-call-和-callStatic"><a href="#六-call-和-callStatic" class="headerlink" title="六.__call()和__callStatic()"></a>六.<code>__call()</code>和<code>__callStatic()</code></h2><p><code>__call</code>：在对象中调用类中不存在的方法时，或者是不可访问方法时被调用</p>
 <p><code>__callStatic</code>：在静态上下文中调用一个不可访问静态方法时被调用(用的不多)</p>
 <p><img src="https://i.loli.net/2021/08/15/goMhKZzP9FkrIVy.png" alt="image.png"></p>
