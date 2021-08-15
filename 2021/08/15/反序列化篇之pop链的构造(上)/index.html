@@ -142,7 +142,7 @@
 <h2 id="一-construct-和-destruct"><a href="#一-construct-和-destruct" class="headerlink" title="一.__construct()和__destruct()"></a>一.<code>__construct()</code>和<code>__destruct()</code></h2><p><code>__construct</code>：当对象<strong>创建</strong>时会自动调用，注意是创建的时候，也就是说有<code>new</code>的时候就会调用，在<code>unserialize</code>时是不会被自动调用的</p>
 <p><code>__destruct()</code>：当对象被<strong>销毁</strong>时会自动调用；当新对象创建后，它后面一定会被自动销毁，也就是调用<code>__construct</code>后一定会调用<code>__destruct</code>；或者我们直接传入一个对象，它后面被销毁时也会调用<code>__destruct</code></p>
 <p><img src="https://i.loli.net/2021/08/13/MURxSsHl8Pi9f2X.png" alt="image.png"></p>
-<p>可以看到，创建对象<code>a</code>时调用了<code>__construct</code>，然后输出对象<code>a</code>，最后在销毁对象<code>a</code>时调用了<code>__destruct</code></p>
+<p>可以看到，创建对象<code>a</code>时调用了<code>__construct</code>，然后输出序列化后的对象<code>a</code>，最后在销毁对象<code>a</code>时调用了<code>__destruct</code></p>
 <p><img src="https://i.loli.net/2021/08/13/IWG9vPVmf5aBoOs.png" alt="image.png"></p>
 <p>再看这个，我们没有创建对象，而是直接传入了一个对象，所以说它没有调用<code>__construct</code>却调用了<code>__destruct</code></p>
 <p><img src="https://i.loli.net/2021/08/13/h25vsIXq4MATpdy.png" alt="image.png"></p>
