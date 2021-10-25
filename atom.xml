@@ -6,7 +6,7 @@
   <link href="https://arsenetang.github.io/atom.xml" rel="self"/>
   
   <link href="https://arsenetang.github.io/"/>
-  <updated>2021-10-18T04:07:36.440Z</updated>
+  <updated>2021-10-25T13:45:33.932Z</updated>
   <id>https://arsenetang.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>温馨提醒</title>
+    <link href="https://arsenetang.github.io/2021/10/25/%E6%B8%A9%E9%A6%A8%E6%8F%90%E9%86%92/"/>
+    <id>https://arsenetang.github.io/2021/10/25/%E6%B8%A9%E9%A6%A8%E6%8F%90%E9%86%92/</id>
+    <published>2021-10-24T16:00:00.000Z</published>
+    <updated>2021-10-25T13:45:33.932Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="温馨提醒"><a href="#温馨提醒" class="headerlink" title="温馨提醒"></a>温馨提醒</h1><p>不好意思打扰到大家，这不是一篇技术贴，而是我想提醒某些人，作为一个网安人，最起码还是应该有点底线，不抄袭应该是最基本的底线了吧，最近发现博客园用户：学安全的小白 直接抄袭我的博客，并且并未给出博客链接，我希望你能迷途知返，及时删除</p><span id="more"></span><p>学安全的小白博客园地址：<a href="https://www.cnblogs.com/pursue-security/default.html?page=1">https://www.cnblogs.com/pursue-security/default.html?page=1</a>，大家可以看看一下文章，基本上与我的博客内容一模一样，并且没有给出转载信息以及原文地址</p><p><img src="https://i.loli.net/2021/10/25/tSEeDuARBWImflp.png" alt="image.png"></p><p><img src="https://i.loli.net/2021/10/25/ivxAuCKjBe5G9rq.png" alt="image.png"></p><p><img src="https://i.loli.net/2021/10/25/hGTyqFsWlERV5zD.png" alt="image.png"></p><p>并且大家可以看看时间，几十分钟抄一篇文章未免有点太离谱了，我希望那个博客园的圈主看到这篇文章后能及时联系我</p><p>下面是几篇文章的链接：</p><p><a href="https://www.cnblogs.com/pursue-security/p/15414499.html">https://www.cnblogs.com/pursue-security/p/15414499.html</a></p><p><a href="https://www.cnblogs.com/pursue-security/p/15413206.html">https://www.cnblogs.com/pursue-security/p/15413206.html</a></p><p><a href="https://www.cnblogs.com/pursue-security/p/15403906.html">https://www.cnblogs.com/pursue-security/p/15403906.html</a></p><p><a href="https://www.cnblogs.com/pursue-security/p/15404150.html">https://www.cnblogs.com/pursue-security/p/15404150.html</a></p><p>做人需要底线，更希望你能要点脸</p>]]></content>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;温馨提醒&quot;&gt;&lt;a href=&quot;#温馨提醒&quot; class=&quot;headerlink&quot; title=&quot;温馨提醒&quot;&gt;&lt;/a&gt;温馨提醒&lt;/h1&gt;&lt;p&gt;不好意思打扰到大家，这不是一篇技术贴，而是我想提醒某些人，作为一个网安人，最起码还是应该有点底线，不抄袭应该是最基本的底线了吧，最近发现博客园用户：学安全的小白 直接抄袭我的博客，并且并未给出博客链接，我希望你能迷途知返，及时删除&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>一文了解CTF线下赛---AWD</title>
