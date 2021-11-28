@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   
   
-  <title>浅析GC回收机制与phar反序列化(上) | Welcome to Arsene.Tang &#39;s Blog</title>
+  <title>浅析GC回收机制与phar反序列化 | Welcome to Arsene.Tang &#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
     <meta name="description" content="web安全">
@@ -87,7 +87,7 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-浅析GC回收机制与phar反序列化(上)" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-浅析GC回收机制与phar反序列化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -95,7 +95,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      浅析GC回收机制与phar反序列化(上)
+      浅析GC回收机制与phar反序列化
     </h1>
   
 
@@ -119,7 +119,7 @@
 
       
       
-<a href="/2021/11/28/%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96(%E4%B8%8A)/#comments" class="article-comment-link">
+<a href="/2021/11/28/%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/#comments" class="article-comment-link">
   
     
     
@@ -135,7 +135,7 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="浅析GC回收机制与phar反序列化-上"><a href="#浅析GC回收机制与phar反序列化-上" class="headerlink" title="浅析GC回收机制与phar反序列化(上)"></a>浅析GC回收机制与phar反序列化(上)</h1><p>前段时间做<code>Xenny</code>师傅的平台NSSCTF遇到了一道利用<code>GC</code>回收机制，实现<code>phar</code>反序列化的题，然后上周我们学校举办的校赛<code>GFCTF</code>同样遇到了一道考点相似的题，那道题还要更难一点，要配合多种<code>filter</code>过滤器来吃掉脏数据，不过原理是差不多的；因为这个知识点内容还是比较多的，写在一篇文章的话感觉太长了，于是就分成两篇来写</p>
+        <h1 id="浅析GC回收机制与phar反序列化"><a href="#浅析GC回收机制与phar反序列化" class="headerlink" title="浅析GC回收机制与phar反序列化"></a>浅析GC回收机制与phar反序列化</h1><p>前段时间做<code>Xenny</code>师傅的平台NSSCTF遇到了一道利用<code>GC</code>回收机制，实现<code>phar</code>反序列化的题，然后上周我们学校举办的校赛<code>GFCTF</code>同样遇到了一道考点相似的题，那道题还要更难一点，要配合多种<code>filter</code>过滤器来吃掉脏数据，不过原理是差不多的；后面会专门写一篇文章来解析那道题</p>
 <span id="more"></span>
 
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们先来看看下面这段代码：</p>
@@ -194,7 +194,7 @@
   <div class="widget-wrap" id="toc-wrap">
     <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
     <div class="widget">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-%E4%B8%8A"><span class="toc-text">浅析GC回收机制与phar反序列化(上)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP-Garbage-collection%E6%9C%BA%E5%88%B6"><span class="toc-text">PHP Garbage collection机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GC%E5%9C%A8phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%AD%E5%AE%9E%E9%99%85%E8%BF%90%E7%94%A8"><span class="toc-text">GC在phar反序列化中实际运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98%E8%A7%A3%E6%9E%90-%E2%80%94-NSSCTF-prize-p1"><span class="toc-text">例题解析 — NSSCTF prize_p1</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">浅析GC回收机制与phar反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP-Garbage-collection%E6%9C%BA%E5%88%B6"><span class="toc-text">PHP Garbage collection机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GC%E5%9C%A8phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%AD%E5%AE%9E%E9%99%85%E8%BF%90%E7%94%A8"><span class="toc-text">GC在phar反序列化中实际运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98%E8%A7%A3%E6%9E%90-%E2%80%94-NSSCTF-prize-p1"><span class="toc-text">例题解析 — NSSCTF prize_p1</span></a></li></ol></li></ol>
     </div>
   </div>
 
@@ -203,7 +203,7 @@
         
         
           <blockquote id="copyright">
-              <p>原文链接: <a href="https://arsenetang.github.io/2021/11/28/浅析GC回收机制与phar反序列化(上)/">https://arsenetang.github.io/2021/11/28/浅析GC回收机制与phar反序列化(上)/</a></p>
+              <p>原文链接: <a href="https://arsenetang.github.io/2021/11/28/浅析GC回收机制与phar反序列化/">https://arsenetang.github.io/2021/11/28/浅析GC回收机制与phar反序列化/</a></p>
               <p>版权声明: 转载请注明出处.</p>
           </blockquote>
         
@@ -263,7 +263,7 @@
       <ul>
         
           <li>
-            <a href="/2021/11/28/%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96(%E4%B8%8A)/">浅析GC回收机制与phar反序列化(上)</a>
+            <a href="/2021/11/28/%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">浅析GC回收机制与phar反序列化</a>
           </li>
         
           <li>
