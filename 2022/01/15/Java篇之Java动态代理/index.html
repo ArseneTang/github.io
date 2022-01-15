@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   
   
-  <title>Welcome to Arsene.Tang &#39;s Blog</title>
+  <title>Java篇之Java动态代理 | Welcome to Arsene.Tang &#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
     <meta name="description" content="web安全">
@@ -91,6 +91,17 @@
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java篇之Java动态代理
+    </h1>
+  
+
+
+      </header>
+    
     <div class="article-meta">
       
       <span class="article-date">
@@ -142,7 +153,7 @@
 <p>最后我们就来创建主类了，在主类中我们先创建一个实现类的对象，然后交给代理类，让代理类来执行里面的方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">test11</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        flag flag = <span class="keyword">new</span> getflag();</span><br><span class="line">        Proxy p = <span class="keyword">new</span> Proxy(flag);</span><br><span class="line">        p.getflag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/Arsene999/image/raw/master/Ad8Pq1l9f7iMpvY.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/01/16/Ad8Pq1l9f7iMpvY.png" alt="image.png"></p>
 <p>这就是所谓的静态代理，我们可以看到，通过代理，我们可以拓展一些新的功能，而且防止了用户直接操作目标对象，提升了安全性；但是缺点也很明显，由于代理类是之前就写好了的，很固定，所以说降低了灵活性；而且代理类和实现类还需要共同实现一个接口或者说共同继承某个类，当类很多时这就很不方便，而且一旦改变了接口的内容，代理类和实现类都需要发生变化</p>
 <h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><p>静态代理的代理类是由程序员手写的，而动态代理则不同，动态代理的代理类字节码则是在程序运行时由Java反射机制动态生成的，这就会方便而且灵活很多，因为Java反射机制可以生成任意类型的动态代理类嘛，<code>java.lang.reflect</code> 包中的 Proxy类和<code>InvocationHandler</code> 接口又提供了生成动态代理类的能力，接下来我们就来看实例：</p>
 <p>接口和接口的实现类还是和上面一样，这里为了演示动态代理我们多添加一个接口<code>flag1</code>以及它的实现类<code>getflag1</code>：</p>
@@ -154,7 +165,7 @@
 <p>其实这逻辑是很简单的，就是用反射去执行一个方法，然后在执行方法的前后我们可以加入一些代码，这个应该不难理解，接下来我们就来看看主类是怎么写的：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">test11</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        flag flag = <span class="keyword">new</span> getflag();</span><br><span class="line">        flag1 flag1 = <span class="keyword">new</span> getflag1();</span><br><span class="line">        InvocationHandler handler1 = <span class="keyword">new</span> DynamicProxy(flag);</span><br><span class="line">        flag a = (flag) Proxy.newProxyInstance(getflag.class.getClassLoader(), <span class="keyword">new</span> Class[]&#123;flag.class&#125;, handler1);</span><br><span class="line">        a.getflag();</span><br><span class="line">        InvocationHandler handler2 = <span class="keyword">new</span> DynamicProxy(flag1);</span><br><span class="line">        flag1 b = (flag1) Proxy.newProxyInstance(getflag1.class.getClassLoader(), <span class="keyword">new</span> Class[]&#123;flag1.class&#125;, handler2);</span><br><span class="line">        b.getflag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="D:\笔记\博客\img\SUTN28OvV5Rcx6K.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/01/16/XzPqwIWsmhYp2BU.png" alt="image.png"></p>
 <p>可以看到，成功了，这真的就很神奇，同一个动态代理的类，居然同时为两种不同的接口以及不同的实现类提供了代理，接下来我们就来讲讲它是怎么实现的，慢慢分析主类的代码，我觉得最重要的就是在动态创建代理类的时候会调用<code>invoke</code>方法，从而实现代理</p>
 <p>首先我们需要定义一个<code>InvocationHandler</code>的实例，将我们需要代理的接口放进去</p>
 <p>接下来就是通过<code>Proxy</code>的静态方法<code>newProxyInstance</code>动态创建代理，而这个方法需要三个参数：</p>
@@ -241,7 +252,7 @@
       <ul>
         
           <li>
-            <a href="/2022/01/15/Java%E7%AF%87%E4%B9%8BJava%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">(no title)</a>
+            <a href="/2022/01/15/Java%E7%AF%87%E4%B9%8BJava%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">Java篇之Java动态代理</a>
           </li>
         
           <li>
