@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java篇之Java动态代理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-01-14T16:00:00.000Z" itemprop="datePublished">2022年01月15日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/01/15/Java%E7%AF%87%E4%B9%8BJava%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Java动态代理"><a href="#Java动态代理" class="headerlink" title="Java动态代理"></a>Java动态代理</h1><p>害前段时间应付该死的学校考试，差不多一个多月的时间没咋学技术吧，就很烦，不过好在结果是好的嘛，现在总算是考完了，可以回家放松放松顺便学学技术了；复习考试之前的那段时间一直在学Java安全，差不多把cc1的链子看完了，确实挺难的，有好多好多要讲到的小东西，接下来就先来总结动态代理吧，相信把好多知识点掰细了它也就不难了</p>
+<span id="more"></span>
+
+<h2 id="Java代理模式"><a href="#Java代理模式" class="headerlink" title="Java代理模式"></a>Java代理模式</h2><p>代理是什么？其实我们生活中也有许多代理的例子，比如说房东要将房子出售，于是到房地产中介公司找一个中介（代理），由他来帮房东完成销售房屋，签订合同、网签、贷款过户等等事宜，而买家也是和这个中介进行谈判的；也就是说，代理本身是不会真正实现具体的服务的，它做的只是一个搭桥的工作</p>
+<p>而在Java中，我们首先是需要一个被代理的接口，以及代理类<code>(Proxy)</code>和真正的实现类<code>(Real)</code>，它们都会去同时继承这个接口，但是用户只能接触到代理类；在用户调用代理类时，代理类在内部调用了实现类，也可以实现一些其它的操作，然后将结果返回给了用户；代理又分为静态代理和动态代理两种，接下来就来看看这两种，当然重点肯定是动态代理哈</p>
+<p><img src="https://s2.loli.net/2022/01/16/OYJzPF3fpMmT6xD.png" alt="image.png"></p>
+<h2 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h2><p>静态代理就是代理类是之前就已经写好了的，来举个例子，先来个接口<code>flag</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">flag</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后写它的实现类<code>getflag</code>，并且继承这个接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">getflag</span> <span class="keyword">implements</span> <span class="title">flag</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Give you flag: flag&#123;wllm_yyds&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后就是代理类<code>Proxy</code>，它同样会继承<code>flag</code>接口，并且它拥有实现类的对象，代为执行里面的方法，就是因为这种间接性，可以附加多种用途，比如说在调用的前后都可以加入一些代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">flag</span></span>&#123;</span><br><span class="line">    flag flag;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Proxy</span><span class="params">(flag flag)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.flag=flag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这是你的flag&quot;</span>);</span><br><span class="line">        flag.getflag();</span><br><span class="line">        System.out.println(<span class="string">&quot;请拿好&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后我们就来创建主类了，在主类中我们先创建一个实现类的对象，然后交给代理类，让代理类来执行里面的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">test11</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        flag flag = <span class="keyword">new</span> getflag();</span><br><span class="line">        Proxy p = <span class="keyword">new</span> Proxy(flag);</span><br><span class="line">        p.getflag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/Arsene999/image/raw/master/Ad8Pq1l9f7iMpvY.png" alt="image.png"></p>
+<p>这就是所谓的静态代理，我们可以看到，通过代理，我们可以拓展一些新的功能，而且防止了用户直接操作目标对象，提升了安全性；但是缺点也很明显，由于代理类是之前就写好了的，很固定，所以说降低了灵活性；而且代理类和实现类还需要共同实现一个接口或者说共同继承某个类，当类很多时这就很不方便，而且一旦改变了接口的内容，代理类和实现类都需要发生变化</p>
+<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><p>静态代理的代理类是由程序员手写的，而动态代理则不同，动态代理的代理类字节码则是在程序运行时由Java反射机制动态生成的，这就会方便而且灵活很多，因为Java反射机制可以生成任意类型的动态代理类嘛，<code>java.lang.reflect</code> 包中的 Proxy类和<code>InvocationHandler</code> 接口又提供了生成动态代理类的能力，接下来我们就来看实例：</p>
+<p>接口和接口的实现类还是和上面一样，这里为了演示动态代理我们多添加一个接口<code>flag1</code>以及它的实现类<code>getflag1</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">flag</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">getflag</span> <span class="keyword">implements</span> <span class="title">flag</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Give you flag: flag&#123;wllm_yyds&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">flag1</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">getflag1</span> <span class="keyword">implements</span> <span class="title">flag1</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getflag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;This is your flag:flag&#123;Welc0me_to_WLLMCTF&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>动态代理类肯定需要实现<code>InvocationHandler</code>接口的，然后里面只用重写一个<code>invoke</code>方法就行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicProxy</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Object object;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DynamicProxy</span><span class="params">(Object object)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.object=object;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这是你的flag&quot;</span>);</span><br><span class="line">        method.invoke(object,args);</span><br><span class="line">        System.out.println(<span class="string">&quot;请拿好&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实这逻辑是很简单的，就是用反射去执行一个方法，然后在执行方法的前后我们可以加入一些代码，这个应该不难理解，接下来我们就来看看主类是怎么写的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">test11</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        flag flag = <span class="keyword">new</span> getflag();</span><br><span class="line">        flag1 flag1 = <span class="keyword">new</span> getflag1();</span><br><span class="line">        InvocationHandler handler1 = <span class="keyword">new</span> DynamicProxy(flag);</span><br><span class="line">        flag a = (flag) Proxy.newProxyInstance(getflag.class.getClassLoader(), <span class="keyword">new</span> Class[]&#123;flag.class&#125;, handler1);</span><br><span class="line">        a.getflag();</span><br><span class="line">        InvocationHandler handler2 = <span class="keyword">new</span> DynamicProxy(flag1);</span><br><span class="line">        flag1 b = (flag1) Proxy.newProxyInstance(getflag1.class.getClassLoader(), <span class="keyword">new</span> Class[]&#123;flag1.class&#125;, handler2);</span><br><span class="line">        b.getflag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\笔记\博客\img\SUTN28OvV5Rcx6K.png" alt="image.png"></p>
+<p>可以看到，成功了，这真的就很神奇，同一个动态代理的类，居然同时为两种不同的接口以及不同的实现类提供了代理，接下来我们就来讲讲它是怎么实现的，慢慢分析主类的代码，我觉得最重要的就是在动态创建代理类的时候会调用<code>invoke</code>方法，从而实现代理</p>
+<p>首先我们需要定义一个<code>InvocationHandler</code>的实例，将我们需要代理的接口放进去</p>
+<p>接下来就是通过<code>Proxy</code>的静态方法<code>newProxyInstance</code>动态创建代理，而这个方法需要三个参数：</p>
+<p>第一个参数就是使用的类加载器<code>ClassLoader</code>，我们用默认的就行，通常就是接口实现类的<code>ClassLoader</code></p>
+<p>第二个参数是我们需要实现的接口数组，一定要写成数组的形式</p>
+<p>第三个参数是一个实现了<code>InvocationHandler</code>接口的对象，里面包含了具体代理的逻辑</p>
+<p>最后再将返回的<code>Object</code>强制转换回接口就好了</p>
+<p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://xie.infoq.cn/article/9a9387805a496e1485dc8430f">https://xie.infoq.cn/article/9a9387805a496e1485dc8430f</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1264804593397984">https://www.liaoxuefeng.com/wiki/1252599548343744/1264804593397984</a></p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-text">Java动态代理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-text">Java代理模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-text">动态代理</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2022/01/15/Java篇之Java动态代理/">https://arsenetang.github.io/2022/01/15/Java篇之Java动态代理/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2021/11/29/WP%E7%AF%87%E4%B9%8B%E8%A7%A3%E6%9E%90GFCTF---%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E5%99%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">WP篇之解析GFCTF---文件查看器</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/15/Java%E7%AF%87%E4%B9%8BJava%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/11/29/WP%E7%AF%87%E4%B9%8B%E8%A7%A3%E6%9E%90GFCTF---%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E5%99%A8/">WP篇之解析GFCTF---文件查看器</a>
+          </li>
+        
+          <li>
+            <a href="/2021/11/28/%E6%B5%85%E6%9E%90GC%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8Ephar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">浅析GC回收机制与phar反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/11/24/WP%E7%AF%87%E4%B9%8B%E8%A7%A3%E6%9E%902021%20GFCTF%E4%B8%AD%E7%9A%84%E4%B8%A4%E9%81%93Web/">WP篇之解析2021 GFCTF中的两道Web</a>
+          </li>
+        
+          <li>
+            <a href="/2021/11/19/WP%E7%AF%87%E4%B9%8B%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982021(%E9%83%A8%E5%88%86Web)/">WP篇之极客大挑战2021(部分Web)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AWD/" style="font-size: 10px;">AWD</a> <a href="/tags/Java/" style="font-size: 11.43px;">Java</a> <a href="/tags/RCE/" style="font-size: 14.29px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 18.57px;">ctf</a> <a href="/tags/php/" style="font-size: 17.14px;">php</a> <a href="/tags/wp/" style="font-size: 12.86px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 15.71px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年11月</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWD/" rel="tag">AWD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://rasalghul-1.github.io/">Ra&#39;s Al Ghul</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46330722">novic4</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/ATFWUS">ATFWUS</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l61q4cheng.github.io/">L61q4_Cheng</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://jev0n.com/">jev0n</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l0v3ming.github.io/">l0v3ming</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://zltt197.github.io/">zltt</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://rencvn.top/">RenCvn</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://le1a.gitee.io/">le1a</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.o3ev.cn/">o3Ev</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://fmyyy.gitee.io/">fmyyy</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.a1kaid.top">A1kaid</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://yao-mou.gitee.io/friend/">Siebene@</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://www.pllrry.site">pl1rry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.dadachd.top/">达达</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://101.34.46.94/ple3.com/">学习中</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://mochu.blog.csdn.net">mochu7</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://eeeeeeeeeeeeeeeea.cn">eeee</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.darry-long.top/">darry</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":250,"height":500},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
