@@ -144,7 +144,7 @@
 
 <p>看起来代码挺复杂的，但实际上逻辑很简单，就是它会遍历我们反序列化后的map，也就是<code>TransformedMap.decorate</code>修饰的map里的所有元素，并依次对它设置值，而在<code>setValue</code>的时候就会触发<code>TransformedMap</code>里面注册的<code>ChainedTransformer</code>对象中的<code>transform</code>方法，从而触发回调</p>
 <p>所以说我们就需要创建一个<code>AnnotationInvocationHandler</code>对象，将前面构造好的<code>outermap</code>放进来</p>
-<p>这里要利用到我们前面讲过的反射知识，因为这个类是在JDK内部的类，所以说不能直接用<code>new</code>来实例化，得利用反射，首先利用反射获取到它的构造方法，然后利用构造方法获取对象就好了，而这个类得构造函数有两个参数，第一个参数是一个<code>Annotation</code>；第二个参数就是前面构造的map，所以说构造代码如下：</p>
+<p>这里要利用到我们前面讲过的反射知识，因为这个类是在JDK内部的类，所以说不能直接用<code>new</code>来实例化，得利用反射，首先利用反射获取到它的构造方法，然后利用构造方法获取对象就好了，而这个类的构造函数有两个参数，第一个参数是一个<code>Annotation</code>；第二个参数就是前面构造的map，所以说构造代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line">Constructor construct = clazz.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">construct.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">Object obj = construct.newInstance(Retention.class, outerMap);</span><br><span class="line">InvocationHandler handler = (InvocationHandler) obj;</span><br></pre></td></tr></table></figure>
 
 <p>而这里为啥是<code>Rention.class</code>呢？是由于<code>AnnotationInvocationHandler</code>类中的<code>readObject</code>方法，这里因为要进入到<code>if</code>语句中，要让<code>memberType</code>不为空，所以说就需要满足两个条件，这里涉及到Java注释相关的技术，我也不太明白，这里就先直接用吧：</p>
