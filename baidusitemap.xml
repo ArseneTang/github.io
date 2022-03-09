@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://arsenetang.github.io/2022/01/19/Java%E7%AF%87%E4%B9%8BJava%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</loc>
+    <lastmod>2022-03-09</lastmod>
+  </url>
+  <url>
     <loc>https://arsenetang.github.io/2022/03/09/Java%E7%AF%87%E4%B9%8BCommons%20Beanutils/</loc>
     <lastmod>2022-03-09</lastmod>
   </url>
@@ -39,10 +43,6 @@
   <url>
     <loc>https://arsenetang.github.io/2022/02/15/Java%E7%AF%87%E4%B9%8Bysoserial%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C/</loc>
     <lastmod>2022-02-14</lastmod>
-  </url>
-  <url>
-    <loc>https://arsenetang.github.io/2022/01/19/Java%E7%AF%87%E4%B9%8BJava%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</loc>
-    <lastmod>2022-01-19</lastmod>
   </url>
   <url>
     <loc>https://arsenetang.github.io/2022/01/15/Java%E7%AF%87%E4%B9%8BJava%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</loc>
