@@ -83,7 +83,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2k</span>
+            <span class="post-count">2.2k</span>
         </span>
     </span>
 
@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">8 分钟</span>
+            <span class="post-count">9 分钟</span>
         </span>
     </span>
 </div>
@@ -129,7 +129,7 @@
 <p>但当我们运行这段POC的时候，是会报错的，原因其实我们文章最开头就讲了，那就是有些类并没有实现<code>java.io.Serializable</code>接口，而没有实现这个接口的类是不允许被序列化的；最开始时我们传给<code>ConstantTransformer</code>的是<code>Runtime.getRuntime() </code>类，<code>Runtime</code>类并没有实现那个接口所以不允许被反序列化，但我们可以不直接利用<code>Runtime</code>类，而是通过反射来获取<code>Runtime</code>对象的呀，就是先获取<code>getRuntime</code>方法，然后利用这个方法创建对象就好了，方法其实上一篇文章也讲到了，这里给出代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Method m = Runtime.class.getMethod(<span class="string">&quot;getRuntime&quot;</span>);</span><br><span class="line">Runtime r = (Runtime) m.invoke(<span class="keyword">null</span>);</span><br><span class="line">r.exec(<span class="string">&quot;calc.exe&quot;</span>);</span><br></pre></td></tr></table></figure>
 
-<p>这里我们利用的就是<code>Runtime.class</code>对象而不是<code>Runtime.getRuntime()</code>对象了，前者是一个<code>java.lang.Runtime</code>对象，后者是一个 <code>java.lang.Class</code>对象。<code>Class</code>类有实现<code>Serializable</code>接口，所以是可以被序列化的</p>
+<p>这里我们利用的就是<code>Runtime.class</code>对象而不是<code>Runtime.getRuntime()</code>对象了，前者是一个<code>java.lang.Class</code>对象，后者是一个 <code>java.lang.Runtime</code>对象。<code>Class</code>类有实现<code>Serializable</code>接口，所以是可以被序列化的</p>
 <p>然后我们再将这段反射的代码写成<code>transformers</code>的形式，就是说先用<code>ConstantTransformer</code>返回<code>Runtime.class</code>对象，然后再利用<code>InvokerTransformer</code>执行一个一个的方法就好了，结合反射的代码很容易看懂：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Transformer[] transformers = <span class="keyword">new</span> Transformer[] &#123;</span><br><span class="line">            <span class="keyword">new</span> ConstantTransformer(Runtime.class),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> Class[] &#123;String.class, Class[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> Class[<span class="number">0</span>] &#125;),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> Class[] &#123; Object.class, Object[].class &#125;, <span class="keyword">new</span> Object[] &#123; <span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>]&#125;),</span><br><span class="line">            <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> Class[] &#123; String.class &#125;, <span class="keyword">new</span> String[] &#123;<span class="string">&quot;calc.exe&quot;</span> &#125;),&#125;;</span><br></pre></td></tr></table></figure>
 
@@ -141,6 +141,17 @@
 <h2 id="为什么无法触发？"><a href="#为什么无法触发？" class="headerlink" title="为什么无法触发？"></a>为什么无法触发？</h2><p>从上图中可以看到，我们并没有报异常，并且输出了序列化后的数据流，但为啥没弹出计算器呢？因为在Java 8u71之后的版本里面，Java 官方修改了 sun.reflect.annotation.AnnotationInvocationHandler 中的readObject函数，具体可以看下面这篇文章：<a target="_blank" rel="noopener" href="http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/rev/f8a528d0379d">http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/rev/f8a528d0379d</a></p>
 <p>改动后，不再直接使用反序列化得到的Map对象，而是新建了一个LinkedHashMap对象，并将原来的键值添加进去。 所以后续对Map的操作都是基于这个新的LinkedHashMap对象，而原来我们精心构造的Map不再执行set或put操作，也就不会触发RCE了</p>
 <p>这里的内容我都是抄的p神的，因为我也是学习为主，明白了它的思路就好了，也就懒得去改Java的版本号了</p>
+<h2 id="版本修改"><a href="#版本修改" class="headerlink" title="版本修改"></a>版本修改</h2><p>学到后面发现没有一个java的老版本还是不太方便，毕竟还有什么Java原生类反序列化啥的，那个版本要求是7u21以下，所以说干脆就装了7u21的版本好了</p>
+<p>官网下载地址：<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html">https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html</a>，还挺难找的，java的老版本藏得老深了</p>
+<p><img src="https://s2.loli.net/2022/03/13/YmbqPWuFEx84rJd.png" alt="image.png"></p>
+<p>下载这个压缩包就行，然后解压，在idea中新建一个项目，<code>SDK</code>就选择刚刚下载好的<code>1.7</code>，然后进去之后注意下面四个地方：</p>
+<p><img src="https://s2.loli.net/2022/03/13/8XsT4BiKJLIHuPO.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/03/13/APYyjMlIovLXDcs.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/03/13/B6z74fKPLp9uyHv.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/03/13/utfm9UY1yZxzg5B.png" alt="image.png"></p>
+<p>这样应该就可以了，如果哪里还有问题请参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/east7/p/13337630.html">https://www.cnblogs.com/east7/p/13337630.html</a>这篇文章，这样版本就切换好了。跑一跑上面的POC：</p>
+<p><img src="C:\myblog\source_posts\img\image-20220313112737733.png" alt="image-20220313112737733"></p>
+<p>成功了，版本一切换，POC就可以跑了</p>
 <p>而在<code>ysoserial</code>中，用的却是<code>LazyMap</code>而不是我们这里用的<code>TransformedMap</code>，事实上好像也确实<code>LazyMap</code>用的更多，下一篇文章我们就来看如何把它转换为<code>LazyMap</code></p>
  
       <!-- reward -->
