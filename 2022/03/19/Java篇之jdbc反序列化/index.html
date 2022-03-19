@@ -108,7 +108,9 @@
     <div class="article-entry" itemprop="articleBody">
        
   <h1 id="jdbc反序列化"><a href="#jdbc反序列化" class="headerlink" title="jdbc反序列化"></a>jdbc反序列化</h1><p>这几天有点儿痛苦，看完了p神的<code>Java</code>安全漫谈之后有点儿迷茫，<code>jndi</code>看了看，<code>fastjson</code>看了看，<code>jdbc</code>也看了看，但感觉都看的不太细，很多东西也没搞明白，写文章感觉有点儿难受，所以说一周多都没更了，接下来就慢慢学着慢慢总结着吧，先来看看<code>jdbc</code>反序列化</p>
-<h2 id="jdbc是啥"><a href="#jdbc是啥" class="headerlink" title="jdbc是啥"></a>jdbc是啥</h2><p><code>JDBC(Java DataBase Connectivity)</code>，是<code>Java</code>与<code>DataBase</code>之间的桥梁，通俗的来说，就是利用<code>Java</code>连接数据库的一种方法；是<code>Java</code>语言中用来规范客户端程序如何访问数据库的应用程序接口，提供了诸如查询和更新数据库中数据的方法，能够执行<code>SQL</code>语言；各种关系型数据库都有相应的方法来实现，但这篇文章我们只针对<code>MYSQL</code>数据库哈</p>
+<span id="more"></span>
+
+<h2 id="jdbc是啥"><a href="#jdbc是啥" class="headerlink" title="jdbc是啥"></a>jdbc是啥</h2><p><code>JDBC(Java DataBase Connectivity)</code>，是<code>Java</code>与<code>DataBase</code>之间的桥梁，通俗来说，就是利用<code>Java</code>连接数据库的一种方法；是<code>Java</code>语言中用来规范客户端程序如何访问数据库的应用程序接口，提供了诸如查询和更新数据库中数据的方法，能够执行<code>SQL</code>语言；各种关系型数据库都有相应的方法来实现，但这篇文章我们只针对<code>MYSQL</code>数据库哈</p>
 <h2 id="连接本地数据库"><a href="#连接本地数据库" class="headerlink" title="连接本地数据库"></a>连接本地数据库</h2><p>我们先来看看用<code>Java</code>如何连接本地的数据库，以及如何执行<code>SQL</code>语句</p>
 <p>首先我们需要利用<code>Class.forName()</code>方法来加载<code>JDBC</code>驱动程序(driver)，这个不同的版本是不一样的，比如说新版本中<code>com.mysql.jdbc.Driver</code>就已经被弃用了，我们得用新的驱动<code>com.mysql.cj.jdbc.Driver</code></p>
 <p>然后利用<code>DriverManager</code>中的<code>getConnection</code>方法，通过<code>JDBC url</code>，用户名，密码来连接相应的数据库</p>
