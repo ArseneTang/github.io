@@ -167,6 +167,59 @@
     
     
     <article
+  id="post-Java篇之RMI&amp;LDAP"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/03/20/Java%E7%AF%87%E4%B9%8BRMI&LDAP/"
+    >Java篇之RMI &amp; LDAP</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/03/20/Java%E7%AF%87%E4%B9%8BRMI&LDAP/" class="article-date">
+  <time datetime="2022-03-19T16:00:00.000Z" itemprop="datePublished">2022-03-20</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="RMI-amp-LDAP"><a href="#RMI-amp-LDAP" class="headerlink" title="RMI &amp; LDAP"></a>RMI &amp; LDAP</h1><p>这篇文章来总结两个基础知识，<code>rmi</code>和<code>ldap</code>，内容比较简单，为后面的<code>jndi</code>和<code>fastjson</code>做个铺垫</p> 
+      <a class="article-more-link" href="/2022/03/20/Java%E7%AF%87%E4%B9%8BRMI&LDAP/"
+        >阅读更多...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
   id="post-Java篇之jdbc反序列化"
   class="article article-type-post"
   itemscope
@@ -620,59 +673,6 @@
        
   <h1 id="Commons-Collections-6"><a href="#Commons-Collections-6" class="headerlink" title="Commons Collections 6"></a>Commons Collections 6</h1><p>前面的三篇文章我们介绍完了cc1的链子，但朋友们不难发现，无论是<code>TransformedMap</code>，还是<code>LazyMap</code>，在Java高版本(8u71之后)，都不能再利用了，主要问题是出在<code>AnnotationInvocationHandler</code>类中的，所以说我们这篇文章来介绍一条相对通用的链子，而这条链子就是<code>CommonsCollections6</code></p> 
       <a class="article-more-link" href="/2022/02/14/Java%E7%AF%87%E4%B9%8BCommonsCollections%206/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-    
-</article>
-
-    
-    <article
-  id="post-Java篇之CommonsCollections 1 (3)"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/02/09/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(3)/"
-    >Java篇Commons Collections 1 (3)</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/02/09/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(3)/" class="article-date">
-  <time datetime="2022-02-08T16:00:00.000Z" itemprop="datePublished">2022-02-09</time>
-</a>    
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="CommonsCollections-1-3"><a href="#CommonsCollections-1-3" class="headerlink" title="CommonsCollections  1  (3)"></a>CommonsCollections  1  (3)</h1><p>这里是cc1的最后了，在<code>ysoserial</code>的源码中，它利用的是<code>LazyMap</code>而不是<code>TransformedMap</code>，其实我认为<code>TransformedMap</code>更简单也更好理解，但既然它用的是<code>LazyMap</code>那我们就来看看<code>LazyMap</code>嘛，这里就需要用到动态代理的知识了</p> 
-      <a class="article-more-link" href="/2022/02/09/Java%E7%AF%87%E4%B9%8BCommonsCollections%201%20(3)/"
         >阅读更多...</a
       >
        
