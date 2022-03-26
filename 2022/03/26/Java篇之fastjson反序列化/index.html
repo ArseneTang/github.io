@@ -108,6 +108,8 @@
     <div class="article-entry" itemprop="articleBody">
        
   <h1 id="fastjson反序列化"><a href="#fastjson反序列化" class="headerlink" title="fastjson反序列化"></a>fastjson反序列化</h1><p>接下来我们来学习<code>Java</code>中的另一种反序列化，也是非常常见的一种，<code>fastjson</code>反序列化</p>
+<span id="more"></span>
+
 <h2 id="fastjson是啥"><a href="#fastjson是啥" class="headerlink" title="fastjson是啥"></a>fastjson是啥</h2><p><code>fastjson</code>是阿里巴巴的开源<code>Json</code>解析库，它可以解析<code>Json</code>格式的字符串，快速将<code>Json</code>与<code>Java Bean</code>对象相互转换，相当于就是一个<code>JSON</code>处理器，可以将<code>Java Bean</code>对象<strong>序列化</strong>为<code>JSON</code>字符串，也可以从<code>JSON</code>字符串<strong>反序列化</strong>到<code>JavaBean</code>对象</p>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>首先还是得用<code>maven</code>来添加一波依赖：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.2.24&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
