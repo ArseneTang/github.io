@@ -1908,7 +1908,7 @@
 <p>加密的代码在最下面，这里的内容如果看不太懂的话，建议回去复习一下前面的内容哦</p>
 <p>运行这一段代码，它就会生成一段base64字符串，直接用这段poyload放burp里去打，发送给shiro</p>
 <p>咦，并没有弹出计算器，而且这时候去看<code>Tomcat</code>，还有报错：</p>
-<p><img src="https://img.le1a.com/2021/10/03/7299cc9d89d59.png" alt="image.png"></p>
+<p><img src="https://s2.loli.net/2022/04/26/6EbQLUNixXdYv4T.png" alt="image.png"></p>
 <h2 id="异常分析"><a href="#异常分析" class="headerlink" title="异常分析"></a>异常分析</h2><p>那么为什么会出现这个异常呢？其实这问题我也不算特别了解，因为我对Shiro也不算很熟，但是这里得报错内容是：<code>Unable to load class named [[Lorg.apache.commons.collections.Transformer;]</code>，意思是说不能加载<code>Transform[]</code>数组，原因我就不太清楚了，这里直接给出p神的结论：<strong>如果反序列化流中包含非Java自身的数组，则会出现无法加载类的错误。</strong>这就解释了为什么CommonsCollections6无法利用了，因为其中用到了Transformer数组。</p>
 <h2 id="构造不含数组的反序列化链"><a href="#构造不含数组的反序列化链" class="headerlink" title="构造不含数组的反序列化链"></a>构造不含数组的反序列化链</h2><p>所以说，咱现在得想办法不用<code>Transform[]</code>数组，这时候我们就应该想到前面用<code>TemplatesImpl</code>构造的cc3的链子，这里我们还是使用<code>InvokerTransformer</code>，其中的数组只有两个元素，复习复习代码：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Transformer[] transformers = <span class="keyword">new</span> Transformer[]&#123;</span><br><span class="line">    <span class="keyword">new</span> ConstantTransformer(obj),</span><br><span class="line">    <span class="keyword">new</span> InvokerTransformer(<span class="string">&quot;newTransformer&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
