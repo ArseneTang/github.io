@@ -110,6 +110,9 @@
   <h1 id="2022美团CTF-—-easyjava"><a href="#2022美团CTF-—-easyjava" class="headerlink" title="2022美团CTF — easyjava"></a>2022美团CTF — easyjava</h1><p>好久没写博客了，今天看了看美团CTF的题，打出了一道java反序列化，应该算是我在比赛中打出的第一道java反序列化的题吧，挺有纪念意义的哈哈，之前都是复现或者打一些简单的java题，像什么log4j，fastjson啥的，都不算是反序列化吧，那么就来写写这道题的wp</p>
 <span id="more"></span>
 
+
+
+<p><img src="https://cdn.nlark.com/yuque/0/2023/png/27860650/1676979291336-fef210ec-0803-45a8-afca-8dc1f12716c9.png" alt="1.png"></p>
 <p>首先拿到jar包，放<code>jd-gui</code>里面打开，一眼就看到反序列化的点了：</p>
 <p><img src="https://img-blog.csdnimg.cn/1643f6c5c16143bea1999037805411a5.png" alt="1.png"></p>
 <p>但是很显然，这里是直接访问不到这个路由的，因为这里做了过滤：</p>
