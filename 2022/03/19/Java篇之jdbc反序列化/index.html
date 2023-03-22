@@ -152,8 +152,7 @@
 <p>主要就是看这两个参数<code>?autoDeserialize=true&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor</code></p>
 <p>第一个参数<code>autoDeserialize</code>是用来自动检测与反序列化存在BLOB字段中的对象，为了满足下面的条件，这其实挺简单，记得加上就行</p>
 <p>第二个参数就稍微有点儿复杂了，<code>ServerStatusDiffInterceptor</code>是一个拦截器，当我们在<code>JDBC url</code>中设置属性<code>queryInterceptors</code>为<code>ServerStatusDiffInterceptor</code>时，在执行<code>SQL</code>的查询语句的时候，会调用拦截器的<code>postProcess</code>方法，然后调用<code>populateMapWithSessionStatusValues</code>方法，然后调用<code>resultSetToMap</code>方法，然后调用<code>getObject</code>方法，在<code>getObject</code>中，只要<code>autoDeserialize</code> 为True，就可以进入到最后<code>readObject</code>中，最终实现反序列化；而我们前面说到了，当通过<code>JDBC</code>连接数据库的时候，会有几个内置的<code>SQL</code>语句会被执行，所以说这样就通了，而这就是这两个参数的由来，调用链不算很难，我也就不放代码了，给一篇参考文章：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/8159">https://xz.aliyun.com/t/8159</a></p>
-<p>运行客户端代码，弹出计算器：</p>
-<p><img src="https://s2.loli.net/2022/03/19/CabYxq1DZsGV5KM.png" alt="image.png"></p>
+<p>运行客户端代码，弹出计算器</p>
 <h2 id="例题解析-—-羊城杯-2020-A-Piece-Of-Java"><a href="#例题解析-—-羊城杯-2020-A-Piece-Of-Java" class="headerlink" title="例题解析 — [羊城杯 2020]A Piece Of Java"></a>例题解析 — [羊城杯 2020]A Piece Of Java</h2><p>这是我人生中做出的第一道CTF的<code>Java</code>题，还挺有纪念意义的哈哈哈，buu上就能复现</p>
 <p>这道题给出了源码，放<code>idea</code>中先审审源码：</p>
 <p>在入口中看到了<code>/hello</code>下面有一个<code>deserialize</code>，而且它反序列化的是<code>Cookie</code>中的<code>data</code>字段的值，我们是可控的，看看<code>deserialize</code></p>
@@ -171,8 +170,7 @@
 <p>然后运行上面那个py文件，运行<code>Mysql</code>恶意服务器，将<code>payload</code>打过去，别忘了监听端口：</p>
 <p><img src="https://s2.loli.net/2022/03/19/GdXipBVzw9CQLPM.png" alt="image.png"></p>
 <p><img src="https://s2.loli.net/2022/03/19/dUfYQGMkc8XaTjP.png" alt="image.png"></p>
-<p><img src="https://s2.loli.net/2022/03/19/XcevYzMAQ1b2sO9.png" alt="image.png"></p>
-<p>shell成功弹回来，拿下</p>
+<p>shell成功弹回来，拿下。</p>
  
       <!-- reward -->
       
